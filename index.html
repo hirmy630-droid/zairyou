@@ -255,7 +255,7 @@
         <div id="screen-calc" class="screen active">
             <div class="bg-[#1c1c1e] p-5 rounded-[20px] mb-4 space-y-5">
                 <div>
-                    <label class="block ios-label text-[#ff9f0a]">寸法 (L)</label>
+                    <label class="block ios-label text-[#ff9f0a]">寸法 (L) <span class="text-[10px] opacity-70">※参考用</span></label>
                     <div class="flex gap-2">
                         <div class="relative flex-grow flex items-center">
                             <input type="text" id="memoDim" placeholder="L寸法" data-unit="㎜" inputmode="decimal" class="input-field p-4 rounded-xl text-[#ff9f0a] font-medium">
@@ -287,7 +287,7 @@
 
                 <div>
                     <div class="flex justify-between items-end mb-1">
-                        <label class="ios-label text-gray-400 mb-0">全幅 (W)</label>
+                        <label class="ios-label text-gray-400 mb-0">全幅 (W) <span class="text-[10px]">※計算基準</span></label>
                         <label class="ios-label text-gray-400 mb-0 w-16 text-center">番号</label>
                     </div>
                     <div class="flex gap-2">
@@ -314,7 +314,7 @@
 
             <div id="results" class="space-y-4">
                 <div class="result-card py-3 px-4">
-                    <div class="text-[16px] text-[#0a84ff] mb-1 uppercase tracking-[0.15em] font-bold">働き計算結果</div>
+                    <div class="text-[16px] text-[#0a84ff] mb-1 uppercase tracking-[0.15em] font-bold">働き計算結果 (W基準)</div>
                     <div class="grid grid-cols-2 gap-4 border-t border-[#545458] pt-2">
                         <div>
                             <div class="text-[15px] text-gray-400 mb-1">必要数量</div>
@@ -337,7 +337,7 @@
                 </div>
 
                 <div class="result-card result-card-green py-3 px-4">
-                    <div class="text-[16px] text-[#30d158] mb-1 uppercase tracking-[0.15em] font-bold">数量計算結果</div>
+                    <div class="text-[16px] text-[#30d158] mb-1 uppercase tracking-[0.15em] font-bold">数量計算結果 (W基準)</div>
                     <div class="grid grid-cols-2 gap-4 border-t border-[#545458] pt-2">
                         <div>
                             <div class="flex items-baseline gap-1 mb-1">
@@ -565,9 +565,8 @@
         }
 
         function calculate() {
-            const L_memo = parseValue(memoDimInput.value);
-            const L_total = parseValue(totalLengthInput.value);
-            const L = !isNaN(L_memo) ? L_memo : L_total; 
+            // 計算基準を「全幅(W)」のみに固定
+            const L = parseValue(totalLengthInput.value); 
 
             const W = parseValue(pitchInput.value);
             const N = parseValue(countInput.value);
@@ -607,8 +606,8 @@
                 const tr = document.createElement('tr');
                 tr.className = `border-t border-[${separatorColor}]`;
                 
+                // 履歴内のL寸法メモの色を元のオレンジ（#ff9f0a）に戻す
                 const memoHtml = item.memo ? `<div class="text-[17px] text-[#ff9f0a] font-medium truncate">L:${item.memo}</div>` : '';
-                // No.バッジにiOS風のグレー背景（bg-[#48484a]）を適用
                 const noBadge = item.no ? `<span class="inline-block bg-[#48484a] text-white text-[14px] px-2 py-0.5 rounded-full mr-1 font-bold">No.${item.no}</span>` : '';
                 
                 const td1 = document.createElement('td');
@@ -662,10 +661,7 @@
         }
 
         function manualSaveToHistory() {
-            const L_memo = parseValue(memoDimInput.value);
-            const L_total = parseValue(totalLengthInput.value);
-            const L = !isNaN(L_memo) ? L_memo : L_total; 
-
+            const L = parseValue(totalLengthInput.value); 
             const W = parseValue(pitchInput.value);
             const N = parseValue(countInput.value);
             const noVal = inputNo.value;
@@ -679,7 +675,7 @@
                 const rem = L % W;
                 historyData.push({
                     type: 'totalLength', memo: memoVal, no: noVal,
-                    input: formatNumber(L_total || L), pitch: formatNumber(W),
+                    input: formatNumber(L), pitch: formatNumber(W),
                     resultNum: qty, result: formatNumber(qty),
                     remNum: rem, rem: formatNumber(rem)
                 });
@@ -739,7 +735,6 @@
             hideConfirmModal();
         }
 
-        // Enterキーによる移動設定
         memoDimInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -750,7 +745,7 @@
         pitchInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                totalLengthInput.focus();
+                countInput.focus();
             }
         });
 
