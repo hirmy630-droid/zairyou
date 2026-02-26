@@ -52,7 +52,7 @@
             background: linear-gradient(180deg, #636366 0%, #48484a 100%);
             color: white;
             box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
-            border-color: #5a5a5e;
+            border: 2px solid var(--ios-orange) !important;
             transform: translateY(-1px);
         }
 
@@ -80,9 +80,10 @@
         }
         .btn-3d-orange:active { transform: translateY(2px); background: linear-gradient(180deg, #ff9f0a 0%, #ffb340 100%); box-shadow: 0 2px 4px rgba(0,0,0,0.2), inset 0 1px 4px rgba(0,0,0,0.3); }
 
+        /* 入力欄のボーダー設定: 通常時は細いグレー、フォーカス時は各テーマカラーを表示 */
         .input-field {
             background-color: var(--ios-tertiary-bg);
-            border: 1px solid var(--ios-separator);
+            border: 1px solid var(--ios-separator) !important; /* 通常時を細いグレーに設定 */
             color: var(--ios-text);
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             width: 100%; 
@@ -91,22 +92,28 @@
             text-align: center; 
             height: 3.2rem;
         }
+        .input-field:focus {
+            border-width: 2px !important; /* フォーカス時は視認性のため少し太く */
+            border-color: var(--ios-orange) !important;
+            background-color: var(--ios-quaternary-bg);
+            outline: none;
+            transform: scale(1.01);
+        }
+        
+        #pitch:focus {
+            border-color: var(--ios-blue) !important;
+        }
+        #count:focus {
+            border-color: var(--ios-green) !important;
+        }
+
         .input-field::placeholder { font-size: 15px; }
 
-        /* ロック（編集不可）状態のスタイル */
         .input-field:read-only { 
             background-color: #0e0e0f; 
             opacity: 0.8; 
             color: #a1a1a1; 
             border-style: solid;
-            border-color: var(--ios-separator);
-        }
-
-        /* 手動入力中の強調表示 */
-        .input-active-source {
-            border-color: var(--ios-orange) !important;
-            box-shadow: none; 
-            background-color: var(--ios-quaternary-bg);
         }
 
         #memoDim, #pitch, #count { font-size: 1.5rem; }
@@ -114,7 +121,6 @@
 
         #totalLength { 
             font-size: 1.65rem; 
-            border-color: var(--ios-orange); 
             padding: 1rem 5.5rem 1rem 1rem; 
             height: 4rem;
             text-align: center; 
@@ -122,11 +128,8 @@
         #inputNo { 
             height: 4rem;
             font-size: 1.15rem; 
-            border-color: var(--ios-orange); 
             padding: 1rem !important; 
         }
-
-        .input-field:focus { background-color: var(--ios-quaternary-bg); border-color: var(--ios-blue); outline: none; transform: scale(1.01); }
 
         .input-unit-display { position: absolute; right: 36px; font-size: 0.85rem; color: var(--ios-text-secondary); pointer-events: none; }
 
@@ -142,7 +145,6 @@
         #historyTableBody tr { background-color: var(--ios-tertiary-bg); }
         #historyTableBody tr:active { background-color: var(--ios-quaternary-bg); }
 
-        /* 履歴の枠線 */
         .history-input-source { 
             box-shadow: inset 0 0 0 1.5px var(--ios-orange);
             position: relative;
@@ -177,20 +179,21 @@
 </head>
 <body class="p-4 pb-8">
     <div id="swipe-container" class="max-w-md mx-auto min-h-screen">
-        <header class="pt-2 pb-4 text-center">
-            <h1 class="text-2xl font-semibold tracking-tight">材料取り割付</h1>
-            <div class="text-[12px] text-gray-400 uppercase tracking-[0.2em] mt-1 mb-4">KYOWA ROOF PRO</div>
-            <div class="tab-switcher">
-                <button onclick="switchTab('calc')" id="tab-calc" class="tab-btn active">計算</button>
-                <button onclick="switchTab('history')" id="tab-history" class="tab-btn">履歴</button>
-            </div>
+        <header class="flex items-baseline justify-between pt-2 pb-4 px-1">
+            <h1 class="text-[26px] font-bold tracking-tight">材料取り割付</h1>
+            <div class="text-[14px] text-gray-400 uppercase tracking-[0.2em] font-medium">KYOWA ROOF PRO</div>
         </header>
+        
+        <div class="tab-switcher">
+            <button onclick="switchTab('calc')" id="tab-calc" class="tab-btn active">計算</button>
+            <button onclick="switchTab('history')" id="tab-history" class="tab-btn">履歴</button>
+        </div>
 
         <!-- 計算画面 -->
         <div id="screen-calc" class="screen active">
             <div class="bg-[#1c1c1e] p-5 rounded-[20px] mb-4 space-y-5">
                 <div>
-                    <label class="block ios-label text-[#ff9f0a]">寸法 (L) <span class="text-[10px] opacity-70">※材料</span></label>
+                    <label class="block ios-label text-[#ff9f0a]">寸法 (L) <span class="text-[11px] opacity-70">※材料</span></label>
                     <div class="flex gap-2">
                         <div class="relative flex-grow flex items-center">
                             <input type="text" id="memoDim" placeholder="L寸法" data-unit="㎜" inputmode="decimal" class="input-field rounded-xl text-[#ff9f0a] font-medium">
@@ -220,12 +223,12 @@
 
                 <div>
                     <div class="flex justify-between items-end mb-1">
-                        <label class="ios-label text-gray-400 mb-0">全幅 (W) <span class="text-[10px]">※施工面</span></label>
+                        <label class="ios-label text-gray-400 mb-0">全幅 (W) <span class="text-[11px]">※施工面</span></label>
                         <label class="ios-label text-gray-400 mb-0 w-16 text-center">番号</label>
                     </div>
                     <div class="flex gap-2">
                         <div class="relative flex-grow flex items-center">
-                            <input type="text" id="totalLength" placeholder="全幅を入力" data-unit="㎜" inputmode="decimal" class="input-field rounded-xl">
+                            <input type="text" id="totalLength" placeholder="全幅を入力" data-unit="㎜" inputmode="decimal" class="input-field rounded-xl font-bold">
                             <span class="input-unit-display" id="unit-totalLength"></span>
                             <button class="clear-input-btn" onclick="clearSingleField('totalLength')">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm3.59 12.17L14.17 15.59 12 13.41l-2.17 2.18-1.42-1.42L10.59 12 8.41 9.83l1.42-1.42L12 10.59l2.17-2.18 1.42 1.42L13.41 12l2.18 2.17z"/></svg>
@@ -239,7 +242,6 @@
             </div>
 
             <div class="mb-6">
-                <!-- 保存ボタンの縦幅を少し小さく調整 (py-4 -> py-2.5) -->
                 <button id="btnSave" onclick="manualSaveToHistory()" class="w-full py-2.5 btn-3d-orange rounded-xl active:opacity-60 transition-all flex items-center justify-center gap-2 text-[16px] font-bold">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                     履歴に保存
@@ -247,7 +249,6 @@
             </div>
 
             <div id="results" class="space-y-4">
-                <!-- 結果カードの縦幅を縮小 (py-3 -> py-2) -->
                 <div class="result-card py-2 px-4">
                     <div class="text-[16px] text-[#8e8e93] mb-1 uppercase tracking-[0.15em] font-bold">働き基準 結果</div>
                     <div class="grid grid-cols-2 gap-4 border-t border-[#545458] pt-2">
@@ -298,7 +299,7 @@
         <div id="screen-history" class="screen">
             <div class="bg-[#1c1c1e] rounded-[20px] shadow-2xl overflow-hidden border border-[#545458]">
                 <div class="bg-[#2c2c2e] p-3 px-4 flex justify-between items-center border-b border-[#545458]">
-                    <h2 class="text-[17px] font-bold text-gray-300 uppercase tracking-widest">計算履歴</h2>
+                    <h2 class="text-[16px] font-bold text-gray-300 uppercase tracking-widest">計算履歴</h2>
                     <button onclick="showConfirmModal()" class="btn-3d-red text-[12px] px-3 py-1.5 rounded-full font-bold">全削除</button>
                 </div>
                 <div class="table-container bg-[#1c1c1e]">
@@ -316,11 +317,11 @@
                                 <td colspan="2" class="py-3 px-4">
                                     <div class="flex justify-around items-center">
                                         <div class="text-center">
-                                            <div class="text-[12px] text-gray-400 uppercase font-bold">働き基準枚数計</div>
+                                            <div class="text-[11px] text-gray-400 uppercase font-bold">働き基準枚数計</div>
                                             <div id="totalQtySum" class="text-[18px] font-bold text-[#0a84ff]">-</div>
                                         </div>
                                         <div class="text-center">
-                                            <div class="text-[12px] text-gray-400 uppercase font-bold">数量基準枚数計</div>
+                                            <div class="text-[11px] text-gray-400 uppercase font-bold">数量基準枚数計</div>
                                             <div id="totalCountSum" class="text-[18px] font-bold text-[#30d158]">-</div>
                                         </div>
                                     </div>
@@ -379,7 +380,7 @@
         let currentTab = 'calc';
         let touchStartX = 0;
         let touchStartY = 0;
-        let inputSource = null; // 'pitch' or 'count'
+        let inputSource = null;
 
         window.onload = function() {
             const savedHistory = localStorage.getItem('waritsuke_history');
@@ -450,17 +451,12 @@
         }
 
         function updateLockState() {
-            pitchInput.classList.remove('input-active-source');
-            countInput.classList.remove('input-active-source');
-
             if (inputSource === 'pitch') {
                 countInput.readOnly = true;
                 pitchInput.readOnly = false;
-                pitchInput.classList.add('input-active-source');
             } else if (inputSource === 'count') {
                 pitchInput.readOnly = true;
                 countInput.readOnly = false;
-                countInput.classList.add('input-active-source');
             } else {
                 pitchInput.readOnly = false;
                 countInput.readOnly = false;
