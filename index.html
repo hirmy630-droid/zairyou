@@ -116,16 +116,17 @@
 
         #totalLength { 
             font-size: 1.5rem; 
-            padding-right: 3.5rem;
+            padding-right: 4.5rem;
         }
         #inputNo { 
             font-size: 1.15rem; 
         }
 
+        .input-unit-display { position: absolute; right: 38px; font-size: 14px; color: var(--ios-text-secondary); pointer-events: none; }
+
         .clear-input-btn { position: absolute; right: 2px; color: var(--ios-text-secondary); padding: 8px; opacity: 0.6; display: none; }
         .input-field:not(:placeholder-shown) + .clear-input-btn { display: block; }
 
-        /* ミニクリアボタン "C" (グレー系デザイン) */
         .mini-clear-btn {
             position: absolute;
             right: 6px;
@@ -154,8 +155,8 @@
         .result-card-green { border-left-color: var(--ios-green); }
 
         .ios-label { font-size: 15px; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
-        .sticky-header th { border-bottom: 3px solid var(--ios-separator); }
-        .sticky-footer td { border-top: 3px solid var(--ios-separator); background-color: var(--ios-secondary-bg); }
+        .sticky-header th { border-bottom: 2px solid var(--ios-separator); }
+        .sticky-footer td { border-top: 2px solid var(--ios-separator); background-color: var(--ios-secondary-bg); }
         #historyTableBody tr { background-color: var(--ios-tertiary-bg); }
         #historyTableBody tr:active { background-color: var(--ios-quaternary-bg); }
 
@@ -187,23 +188,38 @@
 
         .star-mark { color: var(--ios-orange); margin-left: 4px; display: none; }
         .star-mark.active { display: inline; }
+
+        /* 集計用インライン編集スタイル */
+        .editable-memo {
+            background: transparent;
+            border: none;
+            color: white;
+            font-weight: bold;
+            width: 100%;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .editable-memo:focus {
+            background: var(--ios-quaternary-bg);
+            outline: 1px solid var(--ios-orange);
+        }
     </style>
 </head>
-<body class="p-4 pb-8">
+<body class="p-4 pb-8 text-[14px]">
     <div id="swipe-container" class="max-w-md mx-auto min-h-screen">
-        <header class="flex items-baseline justify-between pt-2 pb-4 px-1">
-            <h1 class="text-[25px] font-bold tracking-tight">材料取り割付</h1>
+        <header class="flex items-baseline justify-between pt-1 pb-2 px-1">
+            <h1 class="text-[21px] font-bold tracking-tight">材料取り割付</h1>
             <div class="text-[14px] text-gray-400 uppercase tracking-[0.2em] font-medium">KYOWA ROOF</div>
         </header>
         
-        <div class="tab-switcher">
+        <div class="tab-switcher mb-3">
             <button onclick="switchTab('calc')" id="tab-calc" class="tab-btn active">計算</button>
             <button onclick="switchTab('history')" id="tab-history" class="tab-btn">履歴</button>
         </div>
 
+        <!-- 計算画面 -->
         <div id="screen-calc" class="screen active">
-            <div class="bg-[#1c1c1e] p-5 rounded-[20px] mb-4 space-y-3">
-                <!-- 寸法 (L) & 備考 -->
+            <div class="bg-[#1c1c1e] p-4 rounded-[20px] mb-4 space-y-3">
                 <div>
                     <div class="flex gap-2 mb-1">
                         <label class="ios-label text-[#ff9f0a] mb-0 w-2/3">寸法 (L)</label>
@@ -222,7 +238,6 @@
                     </div>
                 </div>
 
-                <!-- 働き & 数量 -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block ios-label text-[#0a84ff]">働き (＠)</label>
@@ -238,22 +253,21 @@
                     </div>
                 </div>
 
-                <!-- 全幅 (W) -->
                 <div>
                     <div class="flex gap-2 mb-1">
-                        <label class="ios-label text-gray-400 mb-0 w-full">全幅 (W)</label>
+                        <label class="ios-label text-gray-400 mb-0 w-full text-[14px]">全幅 (W)</label>
                     </div>
                     <div class="relative flex items-center mb-2">
-                        <input type="text" id="totalLength" placeholder="施工面の張り幅" inputmode="decimal" class="input-field font-bold">
+                        <input type="text" id="totalLength" placeholder="施工面の張り幅" data-unit="㎜" inputmode="decimal" class="input-field font-bold">
+                        <span class="input-unit-display" id="unit-totalLength"></span>
                         <button onclick="clearSingleField('totalLength')" class="mini-clear-btn">C</button>
                     </div>
-                    <!-- 加算枠 & ボタン類 -->
                     <div class="flex gap-2">
                         <div class="relative flex-grow flex items-center">
                             <input type="text" id="addLength" placeholder="＋加算" inputmode="decimal" class="input-field">
                         </div>
                         <button onclick="executeAddition()" class="w-12 h-[2.8rem] btn-3d-orange text-white rounded-xl flex items-center justify-center text-[22px] font-bold shrink-0">＋</button>
-                        <button onclick="clearAllFields()" class="w-14 h-[2.8rem] btn-3d-gray text-white rounded-xl flex items-center justify-center text-[11px] leading-[1.1] font-bold shrink-0 text-center px-1">全クリア</button>
+                        <button onclick="clearAllFields()" class="w-16 h-[2.8rem] btn-3d-gray text-white rounded-xl flex items-center justify-center text-[14px] leading-[1.1] font-bold shrink-0 text-center px-1">全クリア</button>
                     </div>
                 </div>
             </div>
@@ -267,23 +281,23 @@
 
             <div id="results" class="space-y-4">
                 <div class="result-card py-2 px-4">
-                    <div class="text-[16px] text-[#8e8e93] mb-1 uppercase tracking-[0.15em] font-bold">
+                    <div class="text-[14px] text-[#8e8e93] mb-1 uppercase tracking-[0.15em] font-bold">
                         働き基準 結果<span id="starPitch" class="star-mark">★</span>
                     </div>
                     <div class="grid grid-cols-2 gap-4 border-t border-[#545458] pt-2">
                         <div>
-                            <div class="text-[15px] text-[#0a84ff] mb-1">必要数量</div>
+                            <div class="text-[14px] text-[#0a84ff] mb-0.5">必要数量</div>
                             <div class="flex items-baseline gap-1 text-[#0a84ff]">
                                 <span id="resQuantity" class="text-2xl font-semibold">-</span>
-                                <span id="unitQuantity" class="text-sm hidden">枚</span>
+                                <span id="unitQuantity" class="text-[14px] hidden">枚</span>
                             </div>
                         </div>
                         <div>
-                            <div class="text-[15px] text-gray-400 mb-1">残材余り</div>
+                            <div class="text-[14px] text-gray-400 mb-0.5">残材余り</div>
                             <div class="flex items-center justify-between">
                                 <div class="flex items-baseline gap-1">
                                     <span id="resQtyRemainder" class="text-2xl font-semibold">-</span>
-                                    <span id="unitQtyRem" class="text-sm text-gray-300 hidden">㎜</span>
+                                    <span id="unitQtyRem" class="text-[14px] text-gray-300 hidden">㎜</span>
                                 </div>
                             </div>
                         </div>
@@ -291,23 +305,23 @@
                 </div>
 
                 <div class="result-card result-card-green py-2 px-4">
-                    <div class="text-[16px] text-[#8e8e93] mb-1 uppercase tracking-[0.15em] font-bold">
+                    <div class="text-[14px] text-[#8e8e93] mb-1 uppercase tracking-[0.15em] font-bold">
                         数量基準 結果<span id="starCount" class="star-mark">★</span>
                     </div>
                     <div class="grid grid-cols-2 gap-4 border-t border-[#545458] pt-2">
                         <div>
-                            <div class="text-[15px] text-[#30d158] mb-1">必要働き</div>
+                            <div class="text-[14px] text-[#30d158] mb-0.5">必要働き</div>
                             <div class="flex items-baseline gap-1 text-[#30d158]">
                                 <span id="resWidth" class="text-2xl font-semibold">-</span>
-                                <span id="unitWidth" class="text-sm hidden">㎜</span>
+                                <span id="unitWidth" class="text-[14px] hidden">㎜</span>
                             </div>
                         </div>
                         <div>
-                            <div class="text-[15px] text-gray-400 mb-1">残材余り</div>
+                            <div class="text-[14px] text-gray-400 mb-0.5">残材余り</div>
                             <div class="flex items-center justify-between">
                                 <div class="flex items-baseline gap-1">
                                     <span id="resWidthRemainder" class="text-2xl font-semibold">-</span>
-                                    <span id="unitWidthRem" class="text-sm text-gray-300 hidden">㎜</span>
+                                    <span id="unitWidthRem" class="text-[14px] text-gray-300 hidden">㎜</span>
                                 </div>
                             </div>
                         </div>
@@ -316,33 +330,48 @@
             </div>
         </div>
 
+        <!-- 履歴画面 -->
         <div id="screen-history" class="screen">
-            <div class="bg-[#1c1c1e] rounded-[20px] shadow-2xl overflow-hidden border border-[#545458]">
-                <div class="bg-[#2c2c2e] p-3 px-4 flex justify-between items-center border-b border-[#545458]">
-                    <h2 class="text-[16px] font-bold text-gray-300 uppercase tracking-widest">計算履歴</h2>
-                    <button onclick="showConfirmModal()" class="btn-3d-red text-[12px] px-3 py-1.5 rounded-full font-bold">全削除</button>
+            <!-- 備考別合計の枠 -->
+            <div id="memoSummaryBox" class="bg-[#1c1c1e] rounded-[20px] shadow-2xl overflow-hidden border border-[#545458] mb-4 hidden">
+                <div class="bg-[#2c2c2e] py-1.5 px-4 border-b border-[#545458]">
+                    <h2 class="text-[14px] font-bold text-gray-300 uppercase tracking-widest">備考別 合計枚数</h2>
+                </div>
+                <div id="memoSummaryList" class="p-1.5 space-y-1.5">
+                    <!-- JavaScriptで生成 -->
+                </div>
+            </div>
+
+            <!-- 計算履歴 -->
+            <div class="bg-[#1c1c1e] rounded-[20px] shadow-2xl overflow-hidden border border-[#545458] mb-4">
+                <div class="bg-[#2c2c2e] py-1.5 px-4 flex justify-between items-center border-b border-[#545458]">
+                    <h2 class="text-[14px] font-bold text-gray-300 uppercase tracking-widest">計算履歴</h2>
+                    <!-- 全削除ボタンを2ポイント小さく (text-[12px], padding調整) -->
+                    <button onclick="showConfirmModal()" class="btn-3d-red text-[12px] px-2.5 py-0.5 rounded-full font-bold">全削除</button>
                 </div>
                 <div class="table-container bg-[#1c1c1e]">
                     <table class="w-full text-center border-collapse table-fixed">
-                        <thead class="sticky-header shadow-md">
+                        <thead class="sticky-header">
                             <tr class="text-[14px] font-bold">
-                                <th class="py-3 px-1 border-r border-[#545458] w-[45%] text-[#0a84ff]">働き基準結果</th>
-                                <th class="py-3 px-1 border-r border-[#545458] w-[45%] text-[#30d158]">数量基準結果</th>
+                                <!-- ヘッダーの縦幅を縮小 (py-1) -->
+                                <th class="py-1 px-1 border-r border-[#545458] w-[45%] text-[#0a84ff]">働き基準結果</th>
+                                <th class="py-1 px-1 border-r border-[#545458] w-[45%] text-[#30d158]">数量基準結果</th>
                                 <th class="w-[10%]"></th>
                             </tr>
                         </thead>
                         <tbody id="historyTableBody" class="text-gray-200"></tbody>
                         <tfoot id="historyTableFoot" class="sticky-footer">
                             <tr>
-                                <td colspan="2" class="py-3 px-4">
+                                <!-- フッターの縦幅を縮小 (py-1) -->
+                                <td colspan="2" class="py-1 px-4">
                                     <div class="flex justify-around items-center">
                                         <div class="text-center">
-                                            <div class="text-[11px] text-gray-400 uppercase font-bold">働き基準枚数計</div>
-                                            <div id="totalQtySum" class="text-[18px] font-bold text-[#0a84ff]">-</div>
+                                            <div class="text-[14px] text-gray-400 uppercase font-bold">働き基準合計</div>
+                                            <div id="totalQtySum" class="text-[16px] font-bold text-[#0a84ff]">-</div>
                                         </div>
                                         <div class="text-center">
-                                            <div class="text-[11px] text-gray-400 uppercase font-bold">数量基準枚数計</div>
-                                            <div id="totalCountSum" class="text-[18px] font-bold text-[#30d158]">-</div>
+                                            <div class="text-[14px] text-gray-400 uppercase font-bold">数量基準合計</div>
+                                            <div id="totalCountSum" class="text-[16px] font-bold text-[#30d158]">-</div>
                                         </div>
                                     </div>
                                 </td>
@@ -361,10 +390,10 @@
     </div>
 
     <div id="confirmModal">
-        <div class="modal-content">
+        <div class="modal-content text-[15px]">
             <div class="modal-body">
                 <div class="text-white font-semibold mb-1 text-lg">履歴を削除</div>
-                <div class="text-gray-400 text-sm">すべての計算履歴を完全に消去しますか？</div>
+                <div class="text-gray-400 text-[14px]">すべての計算履歴を完全に消去しますか？</div>
             </div>
             <div class="modal-footer">
                 <button onclick="hideConfirmModal()" class="modal-btn modal-btn-cancel">キャンセル</button>
@@ -397,6 +426,8 @@
         const historyTableBody = document.getElementById('historyTableBody');
         const totalQtySum = document.getElementById('totalQtySum');
         const totalCountSum = document.getElementById('totalCountSum');
+        const memoSummaryBox = document.getElementById('memoSummaryBox');
+        const memoSummaryList = document.getElementById('memoSummaryList');
         const confirmModal = document.getElementById('confirmModal');
         const saveToast = document.getElementById('saveToast');
 
@@ -418,12 +449,10 @@
                     pitchInput.value = inputs.pitch || "";
                     countInput.value = inputs.count || "";
                     inputNo.value = inputs.inputNo || "";
-                    
                     if (pitchInput.value !== "") inputSource = 'pitch';
                     else if (countInput.value !== "") inputSource = 'count';
-
                     [totalLengthInput, memoDimInput, pitchInput, countInput, inputNo].forEach(el => { 
-                        if (el) formatInputDisplay(el);
+                        if (el) { updateUnitDisplay(el); formatInputDisplay(el); }
                     });
                     calculate();
                 } catch(e) {}
@@ -433,10 +462,8 @@
 
         function initSwipeGestures() {
             document.body.addEventListener('touchstart', (e) => { 
-                touchStartX = e.changedTouches[0].screenX; 
-                touchStartY = e.changedTouches[0].screenY; 
+                touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; 
             }, { passive: true });
-
             document.body.addEventListener('touchend', (e) => { 
                 handleGesture(touchStartX, e.changedTouches[0].screenX, touchStartY, e.changedTouches[0].screenY); 
             }, { passive: true });
@@ -466,69 +493,64 @@
         }
 
         function formatNumber(num) { return (num === null || isNaN(num) || num === undefined) ? "-" : Math.round(num).toLocaleString('ja-JP'); }
-        function parseValue(val) { if (!val) return NaN; return parseFloat(val.toString().replace(/[^-0-9.]/g, '')); }
+        
+        function parseValue(val) { 
+            if (!val) return NaN; 
+            let str = val.toString().replace(/[０-９．－]/g, function(s) {
+                return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+            });
+            return parseFloat(str.replace(/[^-0-9.]/g, '')); 
+        }
+
+        function updateUnitDisplay(input) {
+            const unitSpan = document.getElementById('unit-' + input.id);
+            if (!unitSpan) return;
+            const val = parseValue(input.value);
+            unitSpan.innerText = !isNaN(val) ? (input.getAttribute('data-unit') || "") : "";
+        }
 
         function formatInputDisplay(input) {
             if (input.id === 'inputNo' || input.id === 'addLength') return;
             let num = parseValue(input.value);
-            if (isNaN(num)) { input.value = ""; return; }
+            if (isNaN(num)) { input.value = ""; if(input.getAttribute('data-unit')) updateUnitDisplay(input); return; }
             input.value = num.toLocaleString('ja-JP');
+            if(input.getAttribute('data-unit')) updateUnitDisplay(input);
         }
 
         function calculate() {
             const L = parseValue(totalLengthInput.value); 
             const W = parseValue(pitchInput.value);
             const N = parseValue(countInput.value);
-
             resQuantity.innerText = "-"; resQtyRemainder.innerText = "-";
             resWidth.innerText = "-"; resWidthRemainder.innerText = "-";
             [unitQuantity, unitQtyRem, unitWidth, unitWidthRem].forEach(u => u.classList.add('hidden'));
-
-            if (isNaN(L) || (isNaN(W) && isNaN(N))) {
-                resetCalculationUI();
-                return;
-            }
-
+            
+            if (isNaN(L) || (isNaN(W) && isNaN(N))) { resetCalculationUI(); return; }
+            
             if (inputSource === 'pitch') {
-                pitchInput.classList.remove('text-auto', 'text-count');
-                pitchInput.classList.add('text-pitch');
-                countInput.classList.remove('text-auto', 'text-count');
-                countInput.classList.add('text-pitch');
-                starPitch.classList.add('active');
-                starCount.classList.remove('active');
-
+                pitchInput.classList.remove('text-auto', 'text-count'); pitchInput.classList.add('text-pitch');
+                countInput.classList.remove('text-auto', 'text-count'); countInput.classList.add('text-pitch');
+                starPitch.classList.add('active'); starCount.classList.remove('active');
                 if (W > 0) {
-                    const qty = Math.ceil(L / W);
-                    const remP = (qty * W) - L;
+                    const qty = Math.ceil(L / W); const remP = (qty * W) - L;
                     countInput.value = qty.toLocaleString('ja-JP');
-                    resQuantity.innerText = formatNumber(qty);
-                    resQtyRemainder.innerText = formatNumber(remP);
+                    resQuantity.innerText = formatNumber(qty); resQtyRemainder.innerText = formatNumber(remP);
                     unitQuantity.classList.remove('hidden'); unitQtyRem.classList.remove('hidden');
-                    const widthForN = Math.ceil(L / qty);
-                    const remN = (widthForN * qty) - L;
-                    resWidth.innerText = formatNumber(widthForN);
-                    resWidthRemainder.innerText = formatNumber(remN);
+                    const widthForN = Math.ceil(L / qty); const remN = (widthForN * qty) - L;
+                    resWidth.innerText = formatNumber(widthForN); resWidthRemainder.innerText = formatNumber(remN);
                     unitWidth.classList.remove('hidden'); unitWidthRem.classList.remove('hidden');
                 }
             } else if (inputSource === 'count') {
-                countInput.classList.remove('text-auto', 'text-pitch');
-                countInput.classList.add('text-count');
-                pitchInput.classList.remove('text-auto', 'text-pitch');
-                pitchInput.classList.add('text-count');
-                starCount.classList.add('active');
-                starPitch.classList.remove('active');
-
+                countInput.classList.remove('text-auto', 'text-pitch'); countInput.classList.add('text-count');
+                pitchInput.classList.remove('text-auto', 'text-pitch'); pitchInput.classList.add('text-count');
+                starCount.classList.add('active'); starPitch.classList.remove('active');
                 if (N > 0) {
-                    const width = Math.ceil(L / N);
-                    const remN = (width * N) - L;
+                    const width = Math.ceil(L / N); const remN = (width * N) - L;
                     pitchInput.value = width.toLocaleString('ja-JP');
-                    resWidth.innerText = formatNumber(width);
-                    resWidthRemainder.innerText = formatNumber(remN);
+                    resWidth.innerText = formatNumber(width); resWidthRemainder.innerText = formatNumber(remN);
                     unitWidth.classList.remove('hidden'); unitWidthRem.classList.remove('hidden');
-                    const qtyForW = Math.ceil(L / width);
-                    const remP = (qtyForW * width) - L;
-                    resQuantity.innerText = formatNumber(qtyForW);
-                    resQtyRemainder.innerText = formatNumber(remP);
+                    const qtyForW = Math.ceil(L / width); const remP = (qtyForW * width) - L;
+                    resQuantity.innerText = formatNumber(qtyForW); resQtyRemainder.innerText = formatNumber(remP);
                     unitQuantity.classList.remove('hidden'); unitQtyRem.classList.remove('hidden');
                 }
             }
@@ -537,8 +559,7 @@
         function resetCalculationUI() {
             pitchInput.classList.remove('text-pitch', 'text-count', 'text-auto');
             countInput.classList.remove('text-pitch', 'text-count', 'text-auto');
-            starPitch.classList.remove('active');
-            starCount.classList.remove('active');
+            starPitch.classList.remove('active'); starCount.classList.remove('active');
             resQuantity.innerText = "-"; resQtyRemainder.innerText = "-";
             resWidth.innerText = "-"; resWidthRemainder.innerText = "-";
             [unitQuantity, unitQtyRem, unitWidth, unitWidthRem].forEach(u => u.classList.add('hidden'));
@@ -546,42 +567,93 @@
 
         function updateHistoryTable(shouldSave = true) {
             historyTableBody.innerHTML = '';
+            memoSummaryList.innerHTML = '';
             let sumQ = 0, sumN = 0;
             const separatorColor = "#545458"; 
-            
+            const summaryByMemo = {};
+
             historyData.slice().reverse().forEach((item, originalIdx) => {
                 const idx = historyData.length - 1 - originalIdx;
                 const tr = document.createElement('tr');
                 tr.className = `border-t border-[${separatorColor}]`;
-                const memoHtml = item.memo ? `<div class="text-[13px] text-[#ff9f0a] font-medium truncate">L:${item.memo}</div>` : '';
-                const noBadge = item.no ? `<span class="inline-block bg-[#48484a] text-white text-[13px] px-1.5 py-0.5 rounded-full mr-1 font-bold">${item.no}</span>` : '';
-                const widthLabel = `<div class="text-[14px] text-[#c0c0c0] font-bold">W:${item.totalLength}</div>`;
+                const memoKey = item.no || "（備考なし）";
+                if (!summaryByMemo[memoKey]) summaryByMemo[memoKey] = { pitch: 0, count: 0 };
 
+                const memoHtml = item.memo ? `<div class="text-[14px] text-[#ff9f0a] font-medium truncate leading-tight">L:${item.memo}</div>` : '';
+                const noBadge = item.no ? `<span class="inline-block bg-[#48484a] text-white text-[14px] px-1.5 py-0 rounded mr-1 font-bold leading-none">${item.no}</span>` : '';
+                const widthLabel = `<div class="text-[14px] text-[#c0c0c0] font-bold leading-tight">W:${item.totalLength}</div>`;
+
+                // 履歴セルの縦幅を縮小 (py-0.5)
                 const td1 = document.createElement('td');
-                td1.className = `py-1.5 px-1 border-r border-[${separatorColor}] cursor-pointer active:bg-gray-800`;
+                td1.className = `py-0.5 px-1 border-r border-[${separatorColor}] cursor-pointer active:bg-gray-800`;
                 td1.onclick = () => loadHistoryToInput(item, 'pitch');
                 if (item.source === 'pitch') {
-                    td1.innerHTML = `<div class="flex flex-col items-center">${widthLabel}<div class="flex items-center justify-center">${noBadge}<span class="text-[18px] font-bold text-[#0a84ff]">${item.pitchResult}枚</span></div><div class="text-[13px] text-gray-400">@${item.pitchVal} 残:${item.pitchRem}</div>${memoHtml}</div>`;
+                    td1.innerHTML = `<div class="flex flex-col items-center justify-center leading-[1.1] py-0.5">${widthLabel}<div class="flex items-center justify-center my-[2px]">${noBadge}<span class="text-[16px] font-bold text-[#0a84ff] leading-none">${item.pitchResult}枚</span></div><div class="text-[14px] text-gray-400 leading-tight">@${item.pitchVal} 残:${item.pitchRem}</div>${memoHtml}</div>`;
                     sumQ += (item.pitchResultNum || 0);
-                } else { td1.innerHTML = `<div class="text-gray-600 text-xs">-</div>`; }
+                    summaryByMemo[memoKey].pitch += (item.pitchResultNum || 0);
+                } else { td1.innerHTML = `<div class="text-gray-600 text-[14px]">-</div>`; }
 
                 const td2 = document.createElement('td');
-                td2.className = `py-1.5 px-1 border-r border-[${separatorColor}] cursor-pointer active:bg-gray-800`;
+                td2.className = `py-0.5 px-1 border-r border-[${separatorColor}] cursor-pointer active:bg-gray-800`;
                 td2.onclick = () => loadHistoryToInput(item, 'count');
                 if (item.source === 'count') {
-                    td2.innerHTML = `<div class="flex flex-col items-center">${widthLabel}<div class="flex items-center justify-center">${noBadge}<span class="text-[18px] font-bold text-[#30d158]">${item.countVal}枚</span></div><div class="text-[13px] text-gray-400">@${item.countResult}㎜ 残:${item.countRem}</div>${memoHtml}</div>`;
+                    td2.innerHTML = `<div class="flex flex-col items-center justify-center leading-[1.1] py-0.5">${widthLabel}<div class="flex items-center justify-center my-[2px]">${noBadge}<span class="text-[16px] font-bold text-[#30d158] leading-none">${item.countVal}枚</span></div><div class="text-[14px] text-gray-400 leading-tight">@${item.countResult}㎜ 残:${item.countRem}</div>${memoHtml}</div>`;
                     sumN += (item.countValNum || 0);
-                } else { td2.innerHTML = `<div class="text-gray-600 text-xs">-</div>`; }
+                    summaryByMemo[memoKey].count += (item.countValNum || 0);
+                } else { td2.innerHTML = `<div class="text-gray-600 text-[14px]">-</div>`; }
                 
                 const td3 = document.createElement('td');
                 td3.className = "py-0";
-                td3.innerHTML = `<button onclick="deleteHistoryRow(${idx})" class="p-2 text-red-500 active:text-red-600 w-full flex justify-center items-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>`;
+                td3.innerHTML = `<button onclick="deleteHistoryRow(${idx})" class="p-1 text-red-500 active:text-red-600 w-full flex justify-center items-center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>`;
                 tr.append(td1, td2, td3);
                 historyTableBody.appendChild(tr);
             });
+
             totalQtySum.innerText = sumQ > 0 ? formatNumber(sumQ) + "枚" : "-";
             totalCountSum.innerText = sumN > 0 ? formatNumber(sumN) + "枚" : "-";
+
+            const memoKeys = Object.keys(summaryByMemo);
+            if (memoKeys.length > 0) {
+                memoSummaryBox.classList.remove('hidden');
+                memoKeys.forEach(key => {
+                    const data = summaryByMemo[key];
+                    const div = document.createElement('div');
+                    div.className = "bg-[#2c2c2e] p-2 px-3 rounded-xl flex items-center justify-between border border-[#545458]";
+                    div.innerHTML = `
+                        <div class="flex flex-col flex-grow mr-2 overflow-hidden">
+                            <input type="text" value="${key}" class="editable-memo text-[14px]" onchange="updateRemarkName('${key}', this.value)" placeholder="備考なし">
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="text-right">
+                                <div class="text-[12px] text-gray-400 font-bold mb-[2px]">働き基準</div>
+                                <div class="text-[16px] font-bold text-[#0a84ff]">${data.pitch > 0 ? formatNumber(data.pitch) + "枚" : "-"}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-[12px] text-gray-400 font-bold mb-[2px]">数量基準</div>
+                                <div class="text-[16px] font-bold text-[#30d158]">${data.count > 0 ? formatNumber(data.count) + "枚" : "-"}</div>
+                            </div>
+                            <button onclick="deleteByRemark('${key}')" class="p-1.5 text-red-500 active:opacity-50 ml-1">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                        </div>
+                    `;
+                    memoSummaryList.appendChild(div);
+                });
+            } else { memoSummaryBox.classList.add('hidden'); }
             if (shouldSave) localStorage.setItem('waritsuke_history', JSON.stringify(historyData));
+        }
+
+        function updateRemarkName(oldValue, newValue) {
+            const finalOldValue = oldValue === "（備考なし）" ? "" : oldValue;
+            const finalNewValue = newValue === "（備考なし）" ? "" : newValue;
+            historyData.forEach(item => { if ((item.no || "") === finalOldValue) item.no = finalNewValue; });
+            updateHistoryTable();
+        }
+
+        function deleteByRemark(remark) {
+            const finalRemark = remark === "（備考なし）" ? "" : remark;
+            historyData = historyData.filter(item => (item.no || "") !== finalRemark);
+            updateHistoryTable();
         }
 
         function loadHistoryToInput(item, source) {
@@ -605,13 +677,11 @@
             if (isNaN(L) || !inputSource) return;
             let historyEntry = { source: inputSource, totalLength: formatNumber(L), no: inputNo.value, memo: memoDimInput.value };
             if (inputSource === 'pitch' && !isNaN(W) && W > 0) {
-                const qty = Math.ceil(L / W);
-                const remP = (qty * W) - L;
+                const qty = Math.ceil(L / W); const remP = (qty * W) - L;
                 historyEntry.pitchVal = formatNumber(W); historyEntry.pitchResult = formatNumber(qty);
                 historyEntry.pitchResultNum = qty; historyEntry.pitchRem = formatNumber(remP);
             } else if (inputSource === 'count' && !isNaN(N) && N > 0) {
-                const width = Math.ceil(L / N);
-                const remN = (width * N) - L;
+                const width = Math.ceil(L / N); const remN = (width * N) - L;
                 historyEntry.countVal = formatNumber(N); historyEntry.countValNum = N;
                 historyEntry.countResult = formatNumber(width); historyEntry.countRem = formatNumber(remN);
             } else return;
@@ -622,16 +692,16 @@
         function deleteHistoryRow(idx) { historyData.splice(idx, 1); updateHistoryTable(); }
 
         function clearSingleField(id) { 
-            const el = document.getElementById(id); 
-            el.value = ''; 
+            const el = document.getElementById(id); el.value = ''; 
             if (id === 'pitch' || id === 'count') { inputSource = null; pitchInput.value = ''; countInput.value = ''; }
+            if (el.getAttribute('data-unit')) updateUnitDisplay(el);
             calculate(); saveInputs(); el.focus(); 
         }
 
         function clearAllFields() { 
             inputSource = null;
             [totalLengthInput, addLengthInput, memoDimInput, pitchInput, countInput, inputNo].forEach(el => { 
-                if (el) el.value = '';
+                if (el) { el.value = ''; if(el.getAttribute('data-unit')) updateUnitDisplay(el); }
             }); 
             calculate(); saveInputs(); 
         }
@@ -641,10 +711,8 @@
             const add = parseValue(addLengthInput.value);
             if (!isNaN(add)) {
                 totalLengthInput.value = (current + add).toString();
-                formatInputDisplay(totalLengthInput);
-                addLengthInput.value = "";
-                calculate();
-                saveInputs();
+                formatInputDisplay(totalLengthInput); addLengthInput.value = "";
+                calculate(); saveInputs();
             }
             addLengthInput.focus();
         }
@@ -661,7 +729,6 @@
                 } 
                 setTimeout(() => e.target.setSelectionRange(0, e.target.value.length), 10); 
             });
-
             el.addEventListener('input', (e) => { 
                 if (e.target.id === 'pitch' || e.target.id === 'count') {
                     if (e.target.value === "") { pitchInput.value = ""; countInput.value = ""; inputSource = null; }
@@ -669,18 +736,13 @@
                 }
                 if (e.target.id !== 'addLength') { calculate(); saveInputs(); }
             });
-
             el.addEventListener('blur', (e) => { 
                 if (e.target.id !== 'addLength') { formatInputDisplay(e.target); saveInputs(); }
             });
-
             el.addEventListener('keydown', (e) => { 
                 if (e.key === 'Enter') {
-                    if (e.target.id === 'addLength') { 
-                        executeAddition(); 
-                    } else {
-                        e.target.blur();
-                    }
+                    if (e.target.id === 'addLength') executeAddition(); 
+                    else e.target.blur();
                 }
             });
         });
