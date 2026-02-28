@@ -112,21 +112,20 @@
         .input-field::placeholder { font-size: 15px; }
 
         #memoDim, #pitch, #count { font-size: 1.5rem; }
-        #memoDim { padding-right: 4.5rem; }
+        #memoDim { padding-right: 2.5rem; }
 
         #totalLength { 
             font-size: 1.5rem; 
-            padding-right: 4.5rem;
+            padding-right: 3.5rem;
         }
         #inputNo { 
             font-size: 1.15rem; 
         }
 
-        .input-unit-display { position: absolute; right: 38px; font-size: 0.85rem; color: var(--ios-text-secondary); pointer-events: none; }
-
         .clear-input-btn { position: absolute; right: 2px; color: var(--ios-text-secondary); padding: 8px; opacity: 0.6; display: none; }
         .input-field:not(:placeholder-shown) + .clear-input-btn { display: block; }
 
+        /* ミニクリアボタン "C" (グレー系デザイン) */
         .mini-clear-btn {
             position: absolute;
             right: 6px;
@@ -207,13 +206,12 @@
                 <!-- 寸法 (L) & 備考 -->
                 <div>
                     <div class="flex gap-2 mb-1">
-                        <label class="ios-label text-[#ff9f0a] mb-0 w-2/3">寸法 (L) <span class="text-[11px] opacity-70">※材料</span></label>
+                        <label class="ios-label text-[#ff9f0a] mb-0 w-2/3">寸法 (L)</label>
                         <label class="ios-label text-gray-400 mb-0 w-1/3 text-center">備考</label>
                     </div>
                     <div class="flex gap-2">
                         <div class="relative w-2/3 flex items-center">
-                            <input type="text" id="memoDim" placeholder="L寸法" data-unit="㎜" inputmode="decimal" class="input-field text-[#ff9f0a] font-medium">
-                            <span class="input-unit-display" id="unit-memoDim"></span>
+                            <input type="text" id="memoDim" placeholder="材料の長さ" inputmode="decimal" class="input-field text-[#ff9f0a] font-medium">
                             <button class="clear-input-btn" onclick="clearSingleField('memoDim')">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm3.59 12.17L14.17 15.59 12 13.41l-2.17 2.18-1.42-1.42L10.59 12 8.41 9.83l1.42-1.42L12 10.59l2.17-2.18 1.42 1.42L13.41 12l2.18 2.17z"/></svg>
                             </button>
@@ -243,11 +241,10 @@
                 <!-- 全幅 (W) -->
                 <div>
                     <div class="flex gap-2 mb-1">
-                        <label class="ios-label text-gray-400 mb-0 w-full">全幅 (W) <span class="text-[11px]">※施工面</span></label>
+                        <label class="ios-label text-gray-400 mb-0 w-full">全幅 (W)</label>
                     </div>
                     <div class="relative flex items-center mb-2">
-                        <input type="text" id="totalLength" placeholder="全幅を入力" data-unit="㎜" inputmode="decimal" class="input-field font-bold">
-                        <span class="input-unit-display" id="unit-totalLength"></span>
+                        <input type="text" id="totalLength" placeholder="施工面の張り幅" inputmode="decimal" class="input-field font-bold">
                         <button onclick="clearSingleField('totalLength')" class="mini-clear-btn">C</button>
                     </div>
                     <!-- 加算枠 & ボタン類 -->
@@ -426,7 +423,7 @@
                     else if (countInput.value !== "") inputSource = 'count';
 
                     [totalLengthInput, memoDimInput, pitchInput, countInput, inputNo].forEach(el => { 
-                        if (el) { updateUnitDisplay(el); formatInputDisplay(el); }
+                        if (el) formatInputDisplay(el);
                     });
                     calculate();
                 } catch(e) {}
@@ -471,19 +468,11 @@
         function formatNumber(num) { return (num === null || isNaN(num) || num === undefined) ? "-" : Math.round(num).toLocaleString('ja-JP'); }
         function parseValue(val) { if (!val) return NaN; return parseFloat(val.toString().replace(/[^-0-9.]/g, '')); }
 
-        function updateUnitDisplay(input) {
-            const unitSpan = document.getElementById('unit-' + input.id);
-            if (!unitSpan) return;
-            const val = parseValue(input.value);
-            unitSpan.innerText = !isNaN(val) ? (input.getAttribute('data-unit') || "") : "";
-        }
-
         function formatInputDisplay(input) {
             if (input.id === 'inputNo' || input.id === 'addLength') return;
             let num = parseValue(input.value);
-            if (isNaN(num)) { input.value = ""; updateUnitDisplay(input); return; }
+            if (isNaN(num)) { input.value = ""; return; }
             input.value = num.toLocaleString('ja-JP');
-            updateUnitDisplay(input);
         }
 
         function calculate() {
@@ -636,14 +625,13 @@
             const el = document.getElementById(id); 
             el.value = ''; 
             if (id === 'pitch' || id === 'count') { inputSource = null; pitchInput.value = ''; countInput.value = ''; }
-            if (el.getAttribute('data-unit')) updateUnitDisplay(el);
             calculate(); saveInputs(); el.focus(); 
         }
 
         function clearAllFields() { 
             inputSource = null;
             [totalLengthInput, addLengthInput, memoDimInput, pitchInput, countInput, inputNo].forEach(el => { 
-                if (el) { el.value = ''; if(el.getAttribute('data-unit')) updateUnitDisplay(el); }
+                if (el) el.value = '';
             }); 
             calculate(); saveInputs(); 
         }
