@@ -87,10 +87,10 @@
             color: var(--ios-text);
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             width: 100%; 
-            padding: 0.6rem 1rem; 
+            padding: 0.4rem 1rem; 
             font-size: 1.25rem; 
             text-align: center; 
-            height: 3.5rem; 
+            height: 2.8rem; 
             border-radius: 12px;
         }
         .input-field:focus {
@@ -179,20 +179,27 @@
 
         <div id="screen-calc" class="screen active">
             <div class="bg-[#1c1c1e] p-5 rounded-[20px] mb-4 space-y-3">
+                <!-- 寸法 (L) & 備考 -->
                 <div>
-                    <label class="block ios-label text-[#ff9f0a]">寸法 (L) <span class="text-[11px] opacity-70">※材料</span></label>
+                    <div class="flex gap-2 mb-1">
+                        <label class="ios-label text-[#ff9f0a] mb-0 w-2/3">寸法 (L) <span class="text-[11px] opacity-70">※材料</span></label>
+                        <label class="ios-label text-gray-400 mb-0 w-1/3 text-center">備考</label>
+                    </div>
                     <div class="flex gap-2">
-                        <div class="relative flex-grow flex items-center">
+                        <div class="relative w-2/3 flex items-center">
                             <input type="text" id="memoDim" placeholder="L寸法" data-unit="㎜" inputmode="decimal" class="input-field text-[#ff9f0a] font-medium">
                             <span class="input-unit-display" id="unit-memoDim"></span>
                             <button class="clear-input-btn" onclick="clearSingleField('memoDim')">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm3.59 12.17L14.17 15.59 12 13.41l-2.17 2.18-1.42-1.42L10.59 12 8.41 9.83l1.42-1.42L12 10.59l2.17-2.18 1.42 1.42L13.41 12l2.18 2.17z"/></svg>
                             </button>
                         </div>
-                        <button onclick="clearAllFields()" class="w-16 h-[3.5rem] btn-3d-gray text-white rounded-xl flex items-center justify-center text-[15px] font-bold shrink-0">クリア</button>
+                        <div class="w-1/3 shrink-0">
+                            <input type="text" id="inputNo" placeholder="備考" class="input-field">
+                        </div>
                     </div>
                 </div>
 
+                <!-- 働き & 数量 -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block ios-label text-[#0a84ff]">働き (＠)</label>
@@ -208,22 +215,20 @@
                     </div>
                 </div>
 
+                <!-- 全幅 (W) & クリア -->
                 <div>
-                    <div class="flex justify-between items-end mb-1">
-                        <label class="ios-label text-gray-400 mb-0">全幅 (W) <span class="text-[11px]">※施工面</span></label>
-                        <label class="ios-label text-gray-400 mb-0 w-16 text-center">番号</label>
+                    <div class="flex gap-2 mb-1">
+                        <label class="ios-label text-gray-400 mb-0 w-2/3">全幅 (W) <span class="text-[11px]">※施工面</span></label>
                     </div>
                     <div class="flex gap-2">
-                        <div class="relative flex-grow flex items-center">
+                        <div class="relative w-2/3 flex items-center">
                             <input type="text" id="totalLength" placeholder="全幅を入力" data-unit="㎜" inputmode="decimal" class="input-field font-bold">
                             <span class="input-unit-display" id="unit-totalLength"></span>
                             <button class="clear-input-btn" onclick="clearSingleField('totalLength')">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm3.59 12.17L14.17 15.59 12 13.41l-2.17 2.18-1.42-1.42L10.59 12 8.41 9.83l1.42-1.42L12 10.59l2.17-2.18 1.42 1.42L13.41 12l2.18 2.17z"/></svg>
                             </button>
                         </div>
-                        <div class="w-16 shrink-0">
-                            <input type="text" id="inputNo" placeholder="No." inputmode="numeric" class="input-field">
-                        </div>
+                        <button onclick="clearAllFields()" class="w-1/3 h-[2.8rem] btn-3d-gray text-white rounded-xl flex items-center justify-center text-[15px] font-bold shrink-0">クリア</button>
                     </div>
                 </div>
             </div>
@@ -542,7 +547,7 @@
                 tr.className = `border-t border-[${separatorColor}]`;
                 
                 const memoHtml = item.memo ? `<div class="text-[13px] text-[#ff9f0a] font-medium truncate">L:${item.memo}</div>` : '';
-                const noBadge = item.no ? `<span class="inline-block bg-[#48484a] text-white text-[13px] px-1.5 py-0.5 rounded-full mr-1 font-bold">No.${item.no}</span>` : '';
+                const noBadge = item.no ? `<span class="inline-block bg-[#48484a] text-white text-[13px] px-1.5 py-0.5 rounded-full mr-1 font-bold">${item.no}</span>` : '';
                 const widthLabel = `<div class="text-[14px] text-[#c0c0c0] font-bold">W:${item.totalLength}</div>`;
 
                 const td1 = document.createElement('td');
@@ -705,7 +710,7 @@
 
             el.addEventListener('input', (e) => { 
                 if (e.target.id === 'inputNo') {
-                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                    // No restriction for "Remarks"
                 } 
                 else if (e.target.id === 'pitch' || e.target.id === 'count') {
                     if (e.target.value === "") {
