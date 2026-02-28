@@ -74,7 +74,6 @@
         }
         .btn-3d-red:active { transform: translateY(1px); background: linear-gradient(180deg, #d70015 0%, #ff453a 100%); }
 
-        /* 濃いオレンジ色の3Dボタン */
         .btn-3d-orange {
             background: linear-gradient(180deg, #ff9500 0%, #e67600 100%);
             box-shadow: 0 4px 12px rgba(230, 118, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
@@ -128,7 +127,6 @@
         .clear-input-btn { position: absolute; right: 2px; color: var(--ios-text-secondary); padding: 8px; opacity: 0.6; display: none; }
         .input-field:not(:placeholder-shown) + .clear-input-btn { display: block; }
 
-        /* ミニクリアボタン "C" (クリアボタンと同じグレー系デザイン) */
         .mini-clear-btn {
             position: absolute;
             right: 6px;
@@ -257,16 +255,13 @@
                         <div class="relative flex-grow flex items-center">
                             <input type="text" id="addLength" placeholder="＋加算" inputmode="decimal" class="input-field">
                         </div>
-                        <!-- 濃いオレンジ色の＋ボタン -->
                         <button onclick="executeAddition()" class="w-12 h-[2.8rem] btn-3d-orange text-white rounded-xl flex items-center justify-center text-[22px] font-bold shrink-0">＋</button>
-                        <!-- 全クリアボタン -->
                         <button onclick="clearAllFields()" class="w-14 h-[2.8rem] btn-3d-gray text-white rounded-xl flex items-center justify-center text-[11px] leading-[1.1] font-bold shrink-0 text-center px-1">全クリア</button>
                     </div>
                 </div>
             </div>
 
             <div class="mb-6">
-                <!-- 濃いオレンジ色の保存ボタン -->
                 <button id="btnSave" onclick="manualSaveToHistory()" class="w-full py-2.5 btn-3d-orange rounded-xl active:opacity-60 transition-all flex items-center justify-center gap-2 text-[16px] font-bold">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                     履歴に保存
@@ -653,7 +648,6 @@
             calculate(); saveInputs(); 
         }
 
-        // 加算処理 (フォーカスを外さないように調整)
         function executeAddition() {
             const current = parseValue(totalLengthInput.value) || 0;
             const add = parseValue(addLengthInput.value);
@@ -664,9 +658,12 @@
                 calculate();
                 saveInputs();
             }
-            // 続けて入力できるようにフォーカスを戻す
             addLengthInput.focus();
         }
+
+        function showConfirmModal() { if (historyData.length > 0) confirmModal.classList.add('show'); }
+        function hideConfirmModal() { confirmModal.classList.remove('show'); }
+        function clearHistory() { historyData = []; localStorage.removeItem('waritsuke_history'); updateHistoryTable(false); hideConfirmModal(); }
 
         [totalLengthInput, addLengthInput, memoDimInput, pitchInput, countInput, inputNo].forEach(el => {
             if (!el) return;
