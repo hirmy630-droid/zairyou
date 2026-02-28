@@ -14,6 +14,7 @@
             --ios-blue: #0a84ff;
             --ios-green: #30d158;
             --ios-orange: #ff9f0a;
+            --ios-orange-deep: #ff8000;
             --ios-text: #ffffff;
             --ios-text-secondary: #8e8e93;
             --ios-separator: #545458; 
@@ -26,7 +27,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
             line-height: 1.5;
-            touch-action: pan-y; /* 水平方向のスワイプをJavaScriptで処理するために設定 */
+            touch-action: pan-y;
         }
 
         .tab-switcher {
@@ -73,13 +74,14 @@
         }
         .btn-3d-red:active { transform: translateY(1px); background: linear-gradient(180deg, #d70015 0%, #ff453a 100%); }
 
+        /* 濃いオレンジ色の3Dボタン */
         .btn-3d-orange {
-            background: linear-gradient(180deg, #ffb340 0%, #ff9f0a 100%);
-            box-shadow: 0 4px 12px rgba(255, 159, 10, 0.3), inset 0 1px 0 rgba(255,255,255,0.3);
-            border: 1px solid #e68a00;
+            background: linear-gradient(180deg, #ff9500 0%, #e67600 100%);
+            box-shadow: 0 4px 12px rgba(230, 118, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            border: 1px solid #b35c00;
             transition: all 0.1s ease; color: white;
         }
-        .btn-3d-orange:active { transform: translateY(2px); background: linear-gradient(180deg, #ff9f0a 0%, #ffb340 100%); box-shadow: 0 2px 4px rgba(0,0,0,0.2), inset 0 1px 4px rgba(0,0,0,0.3); }
+        .btn-3d-orange:active { transform: translateY(2px); background: linear-gradient(180deg, #e67600 0%, #ff9500 100%); box-shadow: 0 2px 4px rgba(0,0,0,0.2), inset 0 1px 4px rgba(0,0,0,0.3); }
 
         .input-field {
             background-color: var(--ios-tertiary-bg);
@@ -115,16 +117,41 @@
 
         #totalLength { 
             font-size: 1.5rem; 
-            padding-right: 4.5rem; 
+            padding-right: 4.5rem;
         }
         #inputNo { 
             font-size: 1.15rem; 
         }
 
-        .input-unit-display { position: absolute; right: 34px; font-size: 0.85rem; color: var(--ios-text-secondary); pointer-events: none; }
+        .input-unit-display { position: absolute; right: 38px; font-size: 0.85rem; color: var(--ios-text-secondary); pointer-events: none; }
 
         .clear-input-btn { position: absolute; right: 2px; color: var(--ios-text-secondary); padding: 8px; opacity: 0.6; display: none; }
         .input-field:not(:placeholder-shown) + .clear-input-btn { display: block; }
+
+        /* ミニクリアボタン "C" (クリアボタンと同じグレー系デザイン) */
+        .mini-clear-btn {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(180deg, #8e8e93 0%, #636366 100%);
+            color: white;
+            border-radius: 8px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            border: 1px solid #48484a;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            opacity: 0.9;
+        }
+        .mini-clear-btn:active {
+            transform: translateY(-50%) scale(0.95);
+            background: linear-gradient(180deg, #636366 0%, #8e8e93 100%);
+        }
 
         .result-card { background: var(--ios-secondary-bg); border-radius: 14px; border-left: 6px solid var(--ios-blue); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); }
         .result-card-green { border-left-color: var(--ios-green); }
@@ -215,25 +242,31 @@
                     </div>
                 </div>
 
-                <!-- 全幅 (W) & クリア -->
+                <!-- 全幅 (W) -->
                 <div>
                     <div class="flex gap-2 mb-1">
-                        <label class="ios-label text-gray-400 mb-0 flex-grow">全幅 (W) <span class="text-[11px]">※施工面</span></label>
+                        <label class="ios-label text-gray-400 mb-0 w-full">全幅 (W) <span class="text-[11px]">※施工面</span></label>
                     </div>
+                    <div class="relative flex items-center mb-2">
+                        <input type="text" id="totalLength" placeholder="全幅を入力" data-unit="㎜" inputmode="decimal" class="input-field font-bold">
+                        <span class="input-unit-display" id="unit-totalLength"></span>
+                        <button onclick="clearSingleField('totalLength')" class="mini-clear-btn">C</button>
+                    </div>
+                    <!-- 加算枠 & ボタン類 -->
                     <div class="flex gap-2">
                         <div class="relative flex-grow flex items-center">
-                            <input type="text" id="totalLength" placeholder="全幅を入力" data-unit="㎜" inputmode="decimal" class="input-field font-bold">
-                            <span class="input-unit-display" id="unit-totalLength"></span>
-                            <button class="clear-input-btn" onclick="clearSingleField('totalLength')">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm3.59 12.17L14.17 15.59 12 13.41l-2.17 2.18-1.42-1.42L10.59 12 8.41 9.83l1.42-1.42L12 10.59l2.17-2.18 1.42 1.42L13.41 12l2.18 2.17z"/></svg>
-                            </button>
+                            <input type="text" id="addLength" placeholder="＋加算" inputmode="decimal" class="input-field">
                         </div>
-                        <button onclick="clearAllFields()" class="w-16 h-[2.8rem] btn-3d-gray text-white rounded-xl flex items-center justify-center text-[15px] font-bold shrink-0">クリア</button>
+                        <!-- 濃いオレンジ色の＋ボタン -->
+                        <button onclick="executeAddition()" class="w-12 h-[2.8rem] btn-3d-orange text-white rounded-xl flex items-center justify-center text-[22px] font-bold shrink-0">＋</button>
+                        <!-- 全クリアボタン -->
+                        <button onclick="clearAllFields()" class="w-14 h-[2.8rem] btn-3d-gray text-white rounded-xl flex items-center justify-center text-[11px] leading-[1.1] font-bold shrink-0 text-center px-1">全クリア</button>
                     </div>
                 </div>
             </div>
 
             <div class="mb-6">
+                <!-- 濃いオレンジ色の保存ボタン -->
                 <button id="btnSave" onclick="manualSaveToHistory()" class="w-full py-2.5 btn-3d-orange rounded-xl active:opacity-60 transition-all flex items-center justify-center gap-2 text-[16px] font-bold">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                     履歴に保存
@@ -350,6 +383,7 @@
 
     <script>
         const totalLengthInput = document.getElementById('totalLength');
+        const addLengthInput = document.getElementById('addLength');
         const memoDimInput = document.getElementById('memoDim');
         const pitchInput = document.getElementById('pitch');
         const countInput = document.getElementById('count');
@@ -396,14 +430,15 @@
                     if (pitchInput.value !== "") inputSource = 'pitch';
                     else if (countInput.value !== "") inputSource = 'count';
 
-                    [totalLengthInput, memoDimInput, pitchInput, countInput, inputNo].forEach(el => { updateUnitDisplay(el); formatInputDisplay(el); });
+                    [totalLengthInput, memoDimInput, pitchInput, countInput, inputNo].forEach(el => { 
+                        if (el) { updateUnitDisplay(el); formatInputDisplay(el); }
+                    });
                     calculate();
                 } catch(e) {}
             }
             initSwipeGestures();
         };
 
-        // --- スワイプジェスチャーの初期化 ---
         function initSwipeGestures() {
             document.body.addEventListener('touchstart', (e) => { 
                 touchStartX = e.changedTouches[0].screenX; 
@@ -418,16 +453,9 @@
         function handleGesture(startX, endX, startY, endY) {
             const diffX = startX - endX;
             const diffY = Math.abs(startY - endY);
-
-            // 垂直方向の移動が大きい場合や、入力欄にフォーカスがある場合は無視
             if (diffY > 60 || document.activeElement.tagName === 'INPUT') return;
-
-            // 一定以上の距離をスワイプしたら切り替え
-            if (diffX > 80 && currentTab === 'calc') {
-                switchTab('history');
-            } else if (diffX < -80 && currentTab === 'history') {
-                switchTab('calc');
-            }
+            if (diffX > 80 && currentTab === 'calc') switchTab('history');
+            else if (diffX < -80 && currentTab === 'history') switchTab('calc');
         }
 
         function switchTab(tabName) {
@@ -456,7 +484,7 @@
         }
 
         function formatInputDisplay(input) {
-            if (input.id === 'inputNo') return;
+            if (input.id === 'inputNo' || input.id === 'addLength') return;
             let num = parseValue(input.value);
             if (isNaN(num)) { input.value = ""; updateUnitDisplay(input); return; }
             input.value = num.toLocaleString('ja-JP');
@@ -482,7 +510,6 @@
                 pitchInput.classList.add('text-pitch');
                 countInput.classList.remove('text-auto', 'text-count');
                 countInput.classList.add('text-pitch');
-                
                 starPitch.classList.add('active');
                 starCount.classList.remove('active');
 
@@ -493,7 +520,6 @@
                     resQuantity.innerText = formatNumber(qty);
                     resQtyRemainder.innerText = formatNumber(remP);
                     unitQuantity.classList.remove('hidden'); unitQtyRem.classList.remove('hidden');
-                    
                     const widthForN = Math.ceil(L / qty);
                     const remN = (widthForN * qty) - L;
                     resWidth.innerText = formatNumber(widthForN);
@@ -505,7 +531,6 @@
                 countInput.classList.add('text-count');
                 pitchInput.classList.remove('text-auto', 'text-pitch');
                 pitchInput.classList.add('text-count');
-
                 starCount.classList.add('active');
                 starPitch.classList.remove('active');
 
@@ -516,7 +541,6 @@
                     resWidth.innerText = formatNumber(width);
                     resWidthRemainder.innerText = formatNumber(remN);
                     unitWidth.classList.remove('hidden'); unitWidthRem.classList.remove('hidden');
-                    
                     const qtyForW = Math.ceil(L / width);
                     const remP = (qtyForW * width) - L;
                     resQuantity.innerText = formatNumber(qtyForW);
@@ -545,7 +569,6 @@
                 const idx = historyData.length - 1 - originalIdx;
                 const tr = document.createElement('tr');
                 tr.className = `border-t border-[${separatorColor}]`;
-                
                 const memoHtml = item.memo ? `<div class="text-[13px] text-[#ff9f0a] font-medium truncate">L:${item.memo}</div>` : '';
                 const noBadge = item.no ? `<span class="inline-block bg-[#48484a] text-white text-[13px] px-1.5 py-0.5 rounded-full mr-1 font-bold">${item.no}</span>` : '';
                 const widthLabel = `<div class="text-[14px] text-[#c0c0c0] font-bold">W:${item.totalLength}</div>`;
@@ -553,120 +576,63 @@
                 const td1 = document.createElement('td');
                 td1.className = `py-1.5 px-1 border-r border-[${separatorColor}] cursor-pointer active:bg-gray-800`;
                 td1.onclick = () => loadHistoryToInput(item, 'pitch');
-                
                 if (item.source === 'pitch') {
-                    td1.innerHTML = `
-                        <div class="flex flex-col items-center">
-                            ${widthLabel}
-                            <div class="flex items-center justify-center">${noBadge}<span class="text-[18px] font-bold text-[#0a84ff]">${item.pitchResult}枚</span></div>
-                            <div class="text-[13px] text-gray-400">@${item.pitchVal} 残:${item.pitchRem}</div>
-                            ${memoHtml}
-                        </div>
-                    `;
+                    td1.innerHTML = `<div class="flex flex-col items-center">${widthLabel}<div class="flex items-center justify-center">${noBadge}<span class="text-[18px] font-bold text-[#0a84ff]">${item.pitchResult}枚</span></div><div class="text-[13px] text-gray-400">@${item.pitchVal} 残:${item.pitchRem}</div>${memoHtml}</div>`;
                     sumQ += (item.pitchResultNum || 0);
-                } else {
-                    td1.innerHTML = `<div class="text-gray-600 text-xs">-</div>`;
-                }
+                } else { td1.innerHTML = `<div class="text-gray-600 text-xs">-</div>`; }
 
                 const td2 = document.createElement('td');
                 td2.className = `py-1.5 px-1 border-r border-[${separatorColor}] cursor-pointer active:bg-gray-800`;
                 td2.onclick = () => loadHistoryToInput(item, 'count');
-                
                 if (item.source === 'count') {
-                    td2.innerHTML = `
-                        <div class="flex flex-col items-center">
-                            ${widthLabel}
-                            <div class="flex items-center justify-center">${noBadge}<span class="text-[18px] font-bold text-[#30d158]">${item.countVal}枚</span></div>
-                            <div class="text-[13px] text-gray-400">@${item.countResult}㎜ 残:${item.countRem}</div>
-                            ${memoHtml}
-                        </div>
-                    `;
+                    td2.innerHTML = `<div class="flex flex-col items-center">${widthLabel}<div class="flex items-center justify-center">${noBadge}<span class="text-[18px] font-bold text-[#30d158]">${item.countVal}枚</span></div><div class="text-[13px] text-gray-400">@${item.countResult}㎜ 残:${item.countRem}</div>${memoHtml}</div>`;
                     sumN += (item.countValNum || 0);
-                } else {
-                    td2.innerHTML = `<div class="text-gray-600 text-xs">-</div>`;
-                }
+                } else { td2.innerHTML = `<div class="text-gray-600 text-xs">-</div>`; }
                 
                 const td3 = document.createElement('td');
                 td3.className = "py-0";
                 td3.innerHTML = `<button onclick="deleteHistoryRow(${idx})" class="p-2 text-red-500 active:text-red-600 w-full flex justify-center items-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>`;
-                
                 tr.append(td1, td2, td3);
                 historyTableBody.appendChild(tr);
             });
-
             totalQtySum.innerText = sumQ > 0 ? formatNumber(sumQ) + "枚" : "-";
             totalCountSum.innerText = sumN > 0 ? formatNumber(sumN) + "枚" : "-";
-            if (shouldSave) { localStorage.setItem('waritsuke_history', JSON.stringify(historyData)); }
+            if (shouldSave) localStorage.setItem('waritsuke_history', JSON.stringify(historyData));
         }
 
         function loadHistoryToInput(item, source) {
             totalLengthInput.value = item.totalLength;
             memoDimInput.value = item.memo || "";
             inputNo.value = item.no || "";
-            
-            if (source === 'pitch' && item.pitchVal) {
-                pitchInput.value = item.pitchVal;
-                inputSource = 'pitch';
-            } else if (source === 'count' && item.countVal) {
-                countInput.value = item.countVal;
-                inputSource = 'count';
-            } else {
-                if (item.source === 'pitch') {
-                    pitchInput.value = item.pitchVal;
-                    inputSource = 'pitch';
-                } else {
-                    countInput.value = item.countVal;
-                    inputSource = 'count';
-                }
+            if (source === 'pitch' && item.pitchVal) { pitchInput.value = item.pitchVal; inputSource = 'pitch'; }
+            else if (source === 'count' && item.countVal) { countInput.value = item.countVal; inputSource = 'count'; }
+            else {
+                if (item.source === 'pitch') { pitchInput.value = item.pitchVal; inputSource = 'pitch'; }
+                else { countInput.value = item.countVal; inputSource = 'count'; }
             }
-            
-            [totalLengthInput, memoDimInput, pitchInput, countInput, inputNo].forEach(el => { 
-                formatInputDisplay(el); 
-            });
-            calculate();
-            saveInputs();
-            switchTab('calc');
+            [totalLengthInput, memoDimInput, pitchInput, countInput, inputNo].forEach(el => { if(el) formatInputDisplay(el); });
+            calculate(); saveInputs(); switchTab('calc');
         }
 
         function manualSaveToHistory() {
             const L = parseValue(totalLengthInput.value); 
             const W = parseValue(pitchInput.value);
             const N = parseValue(countInput.value);
-            const noVal = inputNo.value;
-            const memoVal = memoDimInput.value;
-            
             if (isNaN(L) || !inputSource) return;
-
-            let historyEntry = {
-                source: inputSource,
-                totalLength: formatNumber(L),
-                no: noVal,
-                memo: memoVal
-            };
-
+            let historyEntry = { source: inputSource, totalLength: formatNumber(L), no: inputNo.value, memo: memoDimInput.value };
             if (inputSource === 'pitch' && !isNaN(W) && W > 0) {
                 const qty = Math.ceil(L / W);
                 const remP = (qty * W) - L;
-                historyEntry.pitchVal = formatNumber(W);
-                historyEntry.pitchResult = formatNumber(qty);
-                historyEntry.pitchResultNum = qty;
-                historyEntry.pitchRem = formatNumber(remP);
-            } 
-            else if (inputSource === 'count' && !isNaN(N) && N > 0) {
+                historyEntry.pitchVal = formatNumber(W); historyEntry.pitchResult = formatNumber(qty);
+                historyEntry.pitchResultNum = qty; historyEntry.pitchRem = formatNumber(remP);
+            } else if (inputSource === 'count' && !isNaN(N) && N > 0) {
                 const width = Math.ceil(L / N);
                 const remN = (width * N) - L;
-                historyEntry.countVal = formatNumber(N);
-                historyEntry.countValNum = N;
-                historyEntry.countResult = formatNumber(width);
-                historyEntry.countRem = formatNumber(remN);
-            } else {
-                return; 
-            }
-
-            historyData.push(historyEntry);
-            updateHistoryTable();
-            saveToast.classList.add('show');
-            setTimeout(() => saveToast.classList.remove('show'), 1200);
+                historyEntry.countVal = formatNumber(N); historyEntry.countValNum = N;
+                historyEntry.countResult = formatNumber(width); historyEntry.countRem = formatNumber(remN);
+            } else return;
+            historyData.push(historyEntry); updateHistoryTable();
+            saveToast.classList.add('show'); setTimeout(() => saveToast.classList.remove('show'), 1200);
         }
 
         function deleteHistoryRow(idx) { historyData.splice(idx, 1); updateHistoryTable(); }
@@ -674,63 +640,64 @@
         function clearSingleField(id) { 
             const el = document.getElementById(id); 
             el.value = ''; 
-            if (id === 'pitch' || id === 'count') {
-                inputSource = null;
-                pitchInput.value = '';
-                countInput.value = '';
-            }
-            updateUnitDisplay(el); 
-            calculate(); 
-            saveInputs(); 
-            el.focus(); 
+            if (id === 'pitch' || id === 'count') { inputSource = null; pitchInput.value = ''; countInput.value = ''; }
+            if (el.getAttribute('data-unit')) updateUnitDisplay(el);
+            calculate(); saveInputs(); el.focus(); 
         }
 
         function clearAllFields() { 
             inputSource = null;
-            [totalLengthInput, memoDimInput, pitchInput, countInput, inputNo].forEach(el => { 
-                el.value = ''; 
-                updateUnitDisplay(el); 
+            [totalLengthInput, addLengthInput, memoDimInput, pitchInput, countInput, inputNo].forEach(el => { 
+                if (el) { el.value = ''; if(el.getAttribute('data-unit')) updateUnitDisplay(el); }
             }); 
-            calculate(); 
-            saveInputs(); 
+            calculate(); saveInputs(); 
         }
 
-        function showConfirmModal() { if (historyData.length > 0) confirmModal.classList.add('show'); }
-        function hideConfirmModal() { confirmModal.classList.remove('show'); }
-        function clearHistory() { historyData = []; localStorage.removeItem('waritsuke_history'); updateHistoryTable(false); hideConfirmModal(); }
+        // 加算処理 (フォーカスを外さないように調整)
+        function executeAddition() {
+            const current = parseValue(totalLengthInput.value) || 0;
+            const add = parseValue(addLengthInput.value);
+            if (!isNaN(add)) {
+                totalLengthInput.value = (current + add).toString();
+                formatInputDisplay(totalLengthInput);
+                addLengthInput.value = "";
+                calculate();
+                saveInputs();
+            }
+            // 続けて入力できるようにフォーカスを戻す
+            addLengthInput.focus();
+        }
 
-        [totalLengthInput, memoDimInput, pitchInput, countInput, inputNo].forEach(el => {
+        [totalLengthInput, addLengthInput, memoDimInput, pitchInput, countInput, inputNo].forEach(el => {
+            if (!el) return;
             el.addEventListener('focus', (e) => { 
-                if (e.target.id !== 'inputNo') { 
-                    const val = parseValue(e.target.value); 
-                    if (!isNaN(val)) e.target.value = val; 
+                if (e.target.id !== 'inputNo' && e.target.id !== 'addLength') { 
+                    const val = parseValue(e.target.value); if (!isNaN(val)) e.target.value = val; 
                 } 
                 setTimeout(() => e.target.setSelectionRange(0, e.target.value.length), 10); 
             });
 
             el.addEventListener('input', (e) => { 
-                if (e.target.id === 'inputNo') {
-                    // No restriction for "Remarks"
-                } 
-                else if (e.target.id === 'pitch' || e.target.id === 'count') {
-                    if (e.target.value === "") {
-                        pitchInput.value = "";
-                        countInput.value = "";
-                        inputSource = null;
-                    } else {
-                        inputSource = e.target.id;
-                    }
+                if (e.target.id === 'pitch' || e.target.id === 'count') {
+                    if (e.target.value === "") { pitchInput.value = ""; countInput.value = ""; inputSource = null; }
+                    else { inputSource = e.target.id; }
                 }
-                calculate(); 
-                saveInputs(); 
+                if (e.target.id !== 'addLength') { calculate(); saveInputs(); }
             });
 
             el.addEventListener('blur', (e) => { 
-                formatInputDisplay(e.target); 
-                saveInputs(); 
+                if (e.target.id !== 'addLength') { formatInputDisplay(e.target); saveInputs(); }
             });
 
-            el.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.target.blur(); });
+            el.addEventListener('keydown', (e) => { 
+                if (e.key === 'Enter') {
+                    if (e.target.id === 'addLength') { 
+                        executeAddition(); 
+                    } else {
+                        e.target.blur();
+                    }
+                }
+            });
         });
     </script>
 </body>
