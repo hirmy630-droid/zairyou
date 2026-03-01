@@ -286,22 +286,17 @@
             </div>
 
             <div class="mb-6 bg-[#1c1c1e] p-3 rounded-[20px] space-y-3">
-                <!-- 備考と保存ボタンを同じ背景枠に配置 -->
                 <div class="relative z-20">
                     <div class="relative flex items-center">
                         <span class="absolute left-4 text-[14px] font-bold text-gray-400 pointer-events-none z-10">備考</span>
-                        <!-- autocomplete="off" を追加してブラウザの予測を無効化。背景を黒にするクラスを追加 -->
                         <input type="text" id="inputNo" placeholder="" class="input-field relative z-0 !bg-black focus:!bg-[#3a3a3c]" style="text-align: center; padding-left: 3.5rem; padding-right: 2.5rem;" autocomplete="off">
                         
-                        <!-- プルダウン開閉用ボタン -->
                         <button id="memoDropdownBtn" class="absolute right-2 p-2 text-[#ff9f0a] focus:outline-none z-10" tabindex="-1">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </button>
 
-                        <!-- ドロップダウンリスト本体 -->
                         <div id="memoDropdown" class="absolute top-[110%] left-0 w-full bg-[#2c2c2e] border border-[#545458] rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] z-50 hidden overflow-hidden">
                             <ul id="memoDropdownList" class="max-h-48 overflow-y-scroll">
-                                <!-- JSで動的に生成 -->
                             </ul>
                         </div>
                     </div>
@@ -366,17 +361,14 @@
 
         <!-- 履歴画面 -->
         <div id="screen-history" class="screen">
-            <!-- 備考別合計の枠 -->
             <div id="memoSummaryBox" class="bg-[#1c1c1e] rounded-[20px] shadow-2xl overflow-hidden border border-[#545458] mb-4 hidden">
                 <div class="bg-[#2c2c2e] py-1.5 px-4 border-b border-[#545458]">
                     <h2 class="text-[14px] font-bold text-gray-300 uppercase tracking-widest">備考別 合計枚数</h2>
                 </div>
                 <div id="memoSummaryList" class="p-1.5 space-y-1.5">
-                    <!-- JavaScriptで生成 -->
                 </div>
             </div>
 
-            <!-- 計算履歴 -->
             <div class="bg-[#1c1c1e] rounded-[20px] shadow-2xl overflow-hidden border border-[#545458] mb-4">
                 <div class="bg-[#2c2c2e] py-1.5 px-4 flex justify-between items-center border-b border-[#545458]">
                     <h2 class="text-[14px] font-bold text-gray-300 uppercase tracking-widest">計算履歴</h2>
@@ -462,7 +454,6 @@
         const confirmModal = document.getElementById('confirmModal');
         const saveToast = document.getElementById('saveToast');
 
-        // ドロップダウン用の要素
         const memoDropdown = document.getElementById('memoDropdown');
         const memoDropdownList = document.getElementById('memoDropdownList');
         const memoDropdownBtn = document.getElementById('memoDropdownBtn');
@@ -494,7 +485,7 @@
                 } catch(e) {}
             }
             initSwipeGestures();
-            updateMemoDropdown(); // 初回起動時にドロップダウンの中身を生成
+            updateMemoDropdown();
         };
 
         function initSwipeGestures() {
@@ -594,7 +585,6 @@
             [unitQuantity, unitQtyRem, unitWidth, unitWidthRem].forEach(u => u.classList.add('hidden'));
         }
 
-        // カスタムドロップダウンを生成する関数
         function updateMemoDropdown() {
             if (!memoDropdownList) return;
             
@@ -645,24 +635,44 @@
                 const memoKey = item.no || "（備考なし）";
                 if (!summaryByMemo[memoKey]) summaryByMemo[memoKey] = { pitch: 0, count: 0 };
 
-                const memoHtml = item.memo ? `<div class="text-[14px] text-[#ff9f0a] font-medium truncate leading-tight">L:${item.memo}</div>` : '';
-                const noBadge = item.no ? `<span class="inline-block bg-[#48484a] text-white text-[14px] px-1.5 py-0 rounded mr-1 font-bold leading-none">${item.no}</span>` : '';
-                const widthLabel = `<div class="text-[14px] text-[#c0c0c0] font-bold leading-tight">W:${item.totalLength}</div>`;
+                const noHeader = item.no ? `<div class="mb-1 text-[13px] font-bold bg-[#48484a] px-2 rounded-full inline-block leading-normal text-white">${item.no}</div>` : '';
+                const dimPrefix = item.memo ? `<span class="text-[13px] text-[#ff9f0a] font-medium mr-1.5">L:${item.memo}</span>` : '';
+                const widthLabel = `<div class="text-[13px] text-[#c0c0c0] font-bold mt-0.5">W:${item.totalLength}</div>`;
 
+                // 働き基準セル
                 const td1 = document.createElement('td');
-                td1.className = `py-0.5 px-1 border-r border-[${separatorColor}] cursor-pointer active:bg-gray-800`;
+                td1.className = `py-1.5 px-1 border-r border-[${separatorColor}] cursor-pointer active:bg-gray-800`;
                 td1.onclick = () => loadHistoryToInput(item, 'pitch');
                 if (item.source === 'pitch') {
-                    td1.innerHTML = `<div class="flex flex-col items-center justify-center leading-[1.1] py-0.5">${widthLabel}<div class="flex items-center justify-center my-[2px]">${noBadge}<span class="text-[16px] font-bold text-[#0a84ff] leading-none">${item.pitchResult}枚</span></div><div class="text-[14px] text-gray-400 leading-tight">@${item.pitchVal} 残:${item.pitchRem}</div>${memoHtml}</div>`;
+                    td1.innerHTML = `
+                        <div class="flex flex-col items-center justify-center leading-tight">
+                            ${noHeader}
+                            <div class="flex items-baseline justify-center">
+                                ${dimPrefix}
+                                <span class="text-[16px] font-bold text-[#0a84ff]">${item.pitchResult}枚</span>
+                            </div>
+                            ${widthLabel}
+                            <div class="text-[12px] text-gray-400 mt-0.5">@${item.pitchVal} 残:${item.pitchRem}</div>
+                        </div>`;
                     sumQ += (item.pitchResultNum || 0);
                     summaryByMemo[memoKey].pitch += (item.pitchResultNum || 0);
                 } else { td1.innerHTML = `<div class="text-gray-600 text-[14px]">-</div>`; }
 
+                // 数量基準セル
                 const td2 = document.createElement('td');
-                td2.className = `py-0.5 px-1 border-r border-[${separatorColor}] cursor-pointer active:bg-gray-800`;
+                td2.className = `py-1.5 px-1 border-r border-[${separatorColor}] cursor-pointer active:bg-gray-800`;
                 td2.onclick = () => loadHistoryToInput(item, 'count');
                 if (item.source === 'count') {
-                    td2.innerHTML = `<div class="flex flex-col items-center justify-center leading-[1.1] py-0.5">${widthLabel}<div class="flex items-center justify-center my-[2px]">${noBadge}<span class="text-[16px] font-bold text-[#30d158] leading-none">${item.countVal}枚</span></div><div class="text-[14px] text-gray-400 leading-tight">@${item.countResult}㎜ 残:${item.countRem}</div>${memoHtml}</div>`;
+                    td2.innerHTML = `
+                        <div class="flex flex-col items-center justify-center leading-tight">
+                            ${noHeader}
+                            <div class="flex items-baseline justify-center">
+                                ${dimPrefix}
+                                <span class="text-[16px] font-bold text-[#30d158]">${item.countVal}枚</span>
+                            </div>
+                            ${widthLabel}
+                            <div class="text-[12px] text-gray-400 mt-0.5">@${item.countResult}㎜ 残:${item.countRem}</div>
+                        </div>`;
                     sumN += (item.countValNum || 0);
                     summaryByMemo[memoKey].count += (item.countValNum || 0);
                 } else { td2.innerHTML = `<div class="text-gray-600 text-[14px]">-</div>`; }
@@ -709,9 +719,7 @@
                 });
             } else { memoSummaryBox.classList.add('hidden'); }
             
-            // 履歴更新時にドロップダウンも更新
             updateMemoDropdown();
-
             if (shouldSave) localStorage.setItem('waritsuke_history', JSON.stringify(historyData));
         }
 
@@ -792,7 +800,6 @@
         function hideConfirmModal() { confirmModal.classList.remove('show'); }
         function clearHistory() { historyData = []; localStorage.removeItem('waritsuke_history'); updateHistoryTable(false); hideConfirmModal(); }
 
-        // 各入力欄の共通イベント
         [totalLengthInput, addLengthInput, memoDimInput, pitchInput, countInput].forEach(el => {
             if (!el) return;
             el.addEventListener('focus', (e) => { 
@@ -819,34 +826,20 @@
             });
         });
 
-        // inputNo (備考) 専用のイベント
         if (inputNo) {
             inputNo.addEventListener('focus', (e) => {
                 setTimeout(() => e.target.setSelectionRange(0, e.target.value.length), 10);
             });
-            
-            inputNo.addEventListener('input', () => {
-                calculate(); saveInputs();
-            });
-
-            inputNo.addEventListener('blur', (e) => {
-                formatInputDisplay(e.target); saveInputs();
-            });
-
-            inputNo.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') e.target.blur();
-            });
-            
-            inputNo.addEventListener('click', (e) => {
-                e.stopPropagation(); // 外側タップ判定に影響させない
-            });
+            inputNo.addEventListener('input', () => { calculate(); saveInputs(); });
+            inputNo.addEventListener('blur', (e) => { formatInputDisplay(e.target); saveInputs(); });
+            inputNo.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.target.blur(); });
+            inputNo.addEventListener('click', (e) => { e.stopPropagation(); });
         }
 
-        // プルダウンボタンのイベント
         if (memoDropdownBtn) {
             memoDropdownBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                e.stopPropagation(); // 外側タップ判定に影響させない
+                e.stopPropagation();
                 if (memoDropdown.classList.contains('hidden')) {
                     updateMemoDropdown();
                     memoDropdown.classList.remove('hidden');
@@ -857,7 +850,6 @@
             });
         }
 
-        // ドロップダウン領域外をタップした時に閉じる処理
         document.addEventListener('click', (e) => {
             if (memoDropdown && !memoDropdown.classList.contains('hidden')) {
                 if (!memoDropdown.contains(e.target)) {
