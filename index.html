@@ -166,37 +166,40 @@
                 <!-- 寸法 (L) -->
                 <div id="field-memoDim" class="relative px-3 h-12 border-b border-[#545458] flex items-center transition-all" onclick="setActiveField('memoDim')">
                     <span class="text-[14px] font-bold text-[#ff9f0a] uppercase shrink-0 whitespace-nowrap mr-2">寸法 (L)</span>
-                    <input type="text" id="memoDim" inputmode="none" class="flex-1 w-full h-full bg-transparent text-right text-[20px] text-[#ff9f0a] font-bold outline-none font-mono pr-1" placeholder="材料の長さ">
+                    <input type="text" id="memoDim" inputmode="none" class="flex-1 w-full h-full bg-transparent text-center text-[20px] text-[#ff9f0a] font-bold outline-none font-mono" placeholder="材料の長さ">
                 </div>
 
                 <!-- 働き(@) ・ 数量(N) -->
                 <div class="flex border-b border-[#545458]">
                     <div id="field-pitch" class="relative flex-1 px-3 h-12 border-r border-[#545458] flex items-center transition-all overflow-hidden" onclick="setActiveField('pitch')">
                         <span id="label-pitch" class="text-[13px] font-bold uppercase transition-colors text-[#0a84ff] shrink-0 whitespace-nowrap mr-1">働き(＠)</span>
-                        <input type="text" id="pitch" inputmode="none" class="flex-1 w-full h-full bg-transparent text-right text-[20px] font-bold outline-none font-mono text-[#0a84ff] pr-1" placeholder="0">
+                        <input type="text" id="pitch" inputmode="none" class="flex-1 w-full h-full bg-transparent text-center text-[20px] font-bold outline-none font-mono text-[#0a84ff]" placeholder="0">
                     </div>
                     <div id="field-count" class="relative flex-1 px-3 h-12 flex items-center transition-all overflow-hidden" onclick="setActiveField('count')">
                         <span id="label-count" class="text-[13px] font-bold uppercase transition-colors text-[#30d158] shrink-0 whitespace-nowrap mr-1">数量(N)</span>
-                        <input type="text" id="count" inputmode="none" class="flex-1 w-full h-full bg-transparent text-right text-[20px] font-bold outline-none font-mono text-[#30d158] pr-1" placeholder="0">
+                        <input type="text" id="count" inputmode="none" class="flex-1 w-full h-full bg-transparent text-center text-[20px] font-bold outline-none font-mono text-[#30d158]" placeholder="0">
                     </div>
                 </div>
 
                 <!-- 全幅 (W) -->
                 <div id="field-totalLength" class="relative px-3 h-[3.5rem] border-b border-[#545458] flex items-center transition-all ring-2 ring-inset ring-orange-500 z-10 bg-[#2c2c2e]" onclick="setActiveField('totalLength')">
                     <span class="text-[14px] font-bold text-[#c0c0c0] uppercase shrink-0 whitespace-nowrap mr-2">全幅 (W)</span>
-                    <input type="text" id="totalLength" inputmode="none" class="flex-1 w-full h-full bg-transparent text-right text-[26px] text-white font-black outline-none font-mono pr-1" placeholder="張り面幅">
+                    <input type="text" id="totalLength" inputmode="none" class="flex-1 w-full h-full bg-transparent text-center text-[26px] text-white font-black outline-none font-mono" placeholder="張り面幅">
                 </div>
 
                 <!-- +加算 & エンター(⏎) 一体行 -->
                 <div class="flex border-b border-[#545458]">
                     <div id="field-addLength" class="relative flex-1 px-3 h-[3.2rem] flex items-center transition-all overflow-hidden" onclick="setActiveField('addLength')">
                         <span class="text-[14px] font-bold text-[#c0c0c0] uppercase shrink-0 whitespace-nowrap mr-2">+加算</span>
-                        <input type="text" id="addLength" inputmode="none" class="flex-1 w-full h-full bg-transparent text-right text-[22px] text-[#c0c0c0] font-bold outline-none font-mono pr-1" placeholder="全幅に加算">
+                        <input type="text" id="addLength" inputmode="none" class="flex-1 w-full h-full bg-transparent text-center text-[22px] text-[#c0c0c0] font-bold outline-none font-mono" placeholder="全幅に加算">
                     </div>
                     <button id="keypad-enter" onclick="handleKeypad('⏎')" class="w-[25%] flex items-center justify-center text-[21px] font-bold border-l border-[#545458] btn-3d-silver-ios text-zinc-800 h-[3.2rem]">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10l-5 5 5 5M4 15h11a5 5 0 0 0 5-5V7"></path></svg>
                     </button>
                 </div>
+
+                <!-- 区切り線 (入力欄とテンキーの間) -->
+                <div class="h-[2px] bg-[#545458] shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)]"></div>
 
                 <!-- テンキーエリア -->
                 <div class="grid grid-cols-4 bg-[#2c2c2e]">
@@ -400,7 +403,6 @@
             remarkTotalCount.innerHTML = cSum > 0 ? `<span style="font-size: 18px;">合計${cSum}枚</span>` : "";
         }
 
-        // 連動計算: 入力値を元に逆の項目を自動入力する
         function updateLinkedValues(L, P, C, source) {
             const numL = parseValue(L), numP = parseValue(P), numC = parseValue(C);
             if (!isNaN(numL) && numL > 0) {
@@ -414,23 +416,17 @@
 
         function calculate() {
             const L = parseValue(totalLengthInput.value), W = parseValue(pitchInput.value), N = parseValue(countInput.value);
-            
-            // リセット
             resQuantity.innerText = "-"; resQtyRemainder.innerText = "-";
             resWidth.innerText = "-"; resWidthRemainder.innerText = "-";
             [unitQuantity, unitQtyRem, unitWidth, unitWidthRem].forEach(u => u.classList.add('hidden'));
             [pitchInput, countInput, labelPitch, labelCount].forEach(el => el.classList.remove('text-[#0a84ff]', 'text-[#30d158]'));
             cardPitch.className = cardCount.className = "bg-[#1c1c1e] p-3 rounded-2xl border-2 border-[#545458] flex flex-col items-start shadow-lg transition-all opacity-60 grayscale";
-
-            // inputSourceがnull（AC直後など）で数値がある場合、働きを優先的にソースにする
             let effectiveSource = inputSource;
             if (!effectiveSource) {
                 if (!isNaN(W) && W > 0) effectiveSource = 'pitch';
                 else if (!isNaN(N) && N > 0) effectiveSource = 'count';
             }
-
             if (isNaN(L) || (isNaN(W) && isNaN(N)) || !effectiveSource) return;
-
             if (effectiveSource === 'pitch') {
                 pitchInput.classList.add('text-[#0a84ff]'); labelPitch.classList.add('text-[#0a84ff]');
                 countInput.classList.add('text-[#0a84ff]'); labelCount.classList.add('text-[#0a84ff]');
@@ -439,8 +435,6 @@
                     resQuantity.innerText = formatNumber(qty); resQtyRemainder.innerText = formatNumber(remP);
                     unitQuantity.classList.remove('hidden'); unitQtyRem.classList.remove('hidden');
                     cardPitch.className = "bg-[#1c1c1e] p-3 rounded-2xl border-2 border-[#0a84ff] flex flex-col items-start shadow-lg transition-all shadow-[0_0_15px_rgba(10,132,255,0.3)]";
-                    
-                    // 数量基準側も計算して表示
                     const widthForN = Math.ceil(L / qty), remN = (widthForN * qty) - L;
                     resWidth.innerText = formatNumber(widthForN); resWidthRemainder.innerText = formatNumber(remN);
                     unitWidth.classList.remove('hidden'); unitWidthRem.classList.remove('hidden');
@@ -454,8 +448,6 @@
                     resWidth.innerText = formatNumber(width); resWidthRemainder.innerText = formatNumber(remN);
                     unitWidth.classList.remove('hidden'); unitWidthRem.classList.remove('hidden');
                     cardCount.className = "bg-[#1c1c1e] p-3 rounded-2xl border-2 border-[#30d158] flex flex-col items-start shadow-lg transition-all shadow-[0_0_15px_rgba(48,209,88,0.3)]";
-                    
-                    // 働き基準側も計算
                     const qtyForW = Math.ceil(L / width), remP = (qtyForW * width) - L;
                     resQuantity.innerText = formatNumber(qtyForW); resQtyRemainder.innerText = formatNumber(remP);
                     unitQuantity.classList.remove('hidden'); unitQtyRem.classList.remove('hidden');
@@ -507,15 +499,12 @@
             document.querySelectorAll('[id^="field-"]').forEach(el => el.classList.remove('ring-2', 'ring-inset', 'ring-orange-500', 'z-10', 'bg-[#2c2c2e]'));
             const el = document.getElementById('field-' + fieldName);
             if(el) el.classList.add('ring-2', 'ring-inset', 'ring-orange-500', 'z-10', 'bg-[#2c2c2e]');
-            
             activeField = fieldName; isNewEntry = true;
-            
             const current = document.getElementById(activeField);
             if (current) {
                 current.value = current.value.replace(/,/g, '');
                 setTimeout(() => current.select(), 10);
             }
-
             if (keypadEnter) {
                 if (fieldName === 'addLength') keypadEnter.innerHTML = '<span class="text-[18px]">加算</span>';
                 else keypadEnter.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10l-5 5 5 5M4 15h11a5 5 0 0 0 5-5V7"></path></svg>';
@@ -529,7 +518,6 @@
                 inputSource = null; calculate(); setActiveField('totalLength'); return; 
             }
             if (key === 'C') { if (input) input.value = ''; calculate(); return; }
-            
             if (key === '+/-') {
                 if (!input || activeField === 'inputNo') return;
                 let val = parseValue(input.value);
@@ -542,17 +530,13 @@
                 }
                 return;
             }
-
             if (key === '保存') {
                 const L = parseValue(totalLengthInput.value), W = parseValue(pitchInput.value), N = parseValue(countInput.value);
-                
-                // ソース未確定なら働きをデフォルトとする
                 let saveSource = inputSource;
                 if (!saveSource) {
                     if (W > 0) saveSource = 'pitch';
                     else if (N > 0) saveSource = 'count';
                 }
-
                 if (isNaN(L) || !saveSource) return;
                 let entry = { id: Date.now().toString(), source: saveSource, totalLength: formatNumber(L), no: inputNo.value, memoDim: memoDimInput.value };
                 if (saveSource === 'pitch' && W > 0) {
@@ -565,7 +549,6 @@
                 historyData.unshift(entry); updateHistoryTable(); updateRemarkTotals();
                 saveToast.classList.add('show'); setTimeout(() => saveToast.classList.remove('show'), 1200); return;
             }
-
             if (key === '⏎') {
                 if (activeField === 'addLength') { executeAddition(); } 
                 else {
@@ -574,17 +557,13 @@
                 }
                 return;
             }
-
             if (!input) return;
             if (activeField === 'inputNo') { input.value = isNewEntry ? key : input.value + key; isNewEntry = false; updateRemarkTotals(); return; }
             let curStr = isNewEntry ? '' : input.value.replace(/,/g, '');
             if (key === '00' && curStr === '') return;
             input.value = curStr + key; isNewEntry = false;
-            
             if (activeField === 'pitch') inputSource = 'pitch'; 
             else if (activeField === 'count') inputSource = 'count';
-            
-            // 働きまたは数量が入力された場合、相互に値を計算して反映する
             updateLinkedValues(totalLengthInput.value, pitchInput.value, countInput.value, inputSource || 'pitch'); 
             calculate();
         }
