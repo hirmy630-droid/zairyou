@@ -58,7 +58,6 @@
             transform: translateY(-1px);
         }
 
-        /* 立体的なオレンジボタン (保存用) */
         .btn-3d-orange-ios {
             background: linear-gradient(180deg, #ff9500 0%, #e67600 100%);
             border: 1px solid #b35c00;
@@ -67,14 +66,13 @@
             position: relative;
             top: 0;
             z-index: 1;
-            opacity: 1 !important; /* 不透明化を強制 */
+            opacity: 1 !important;
         }
         .btn-3d-orange-ios:active {
             transform: translateY(2px);
             box-shadow: 0 2px 4px rgba(0,0,0,0.2), inset 0 1px 4px rgba(0,0,0,0.3);
         }
 
-        /* 立体的なシルバーボタン (エンター用) */
         .btn-3d-silver-ios {
             background: linear-gradient(180deg, #e5e5ea 0%, #c7c7cc 100%);
             border: 1px solid #8e8e93;
@@ -151,18 +149,15 @@
             <button onclick="switchTab('history')" id="tab-history" class="tab-btn">履歴</button>
         </div>
 
-        <!-- 計算画面 -->
         <div id="screen-calc" class="screen active">
-
             <!-- 独立した備考枠 -->
             <div id="field-inputNo" class="relative px-3 h-12 border border-[#c0c0c0] bg-[#1c1c1e] rounded-[10px] flex items-center mb-3 transition-all" onclick="setActiveField('inputNo')">
                 <span class="text-[14px] font-bold text-[#c0c0c0] shrink-0 whitespace-nowrap mr-2">備考</span>
                 <input type="text" id="inputNo" class="flex-1 w-full h-full bg-transparent text-left text-[18px] text-white font-bold outline-none" placeholder="名前、場所、番号等">
             </div>
 
-            <!-- メインエリア (太枠化) -->
+            <!-- メインエリア -->
             <div class="bg-[#1c1c1e] rounded-[20px] overflow-hidden border-2 border-[#545458] shadow-xl mb-4">
-                
                 <!-- 寸法 (L) -->
                 <div id="field-memoDim" class="relative px-3 h-12 border-b border-[#545458] flex items-center transition-all" onclick="setActiveField('memoDim')">
                     <span class="text-[14px] font-bold text-[#ff9f0a] uppercase shrink-0 whitespace-nowrap mr-2">寸法 (L)</span>
@@ -172,11 +167,11 @@
                 <!-- 働き(@) ・ 数量(N) -->
                 <div class="flex border-b border-[#545458]">
                     <div id="field-pitch" class="relative flex-1 px-3 h-12 border-r border-[#545458] flex items-center transition-all overflow-hidden" onclick="setActiveField('pitch')">
-                        <span id="label-pitch" class="text-[13px] font-bold uppercase transition-colors text-[#0a84ff] shrink-0 whitespace-nowrap mr-1">働き(＠)</span>
+                        <span id="label-pitch" class="text-[13px] font-bold uppercase text-[#0a84ff] shrink-0 whitespace-nowrap mr-1">働き(＠)</span>
                         <input type="text" id="pitch" inputmode="none" class="flex-1 w-full h-full bg-transparent text-center text-[20px] font-bold outline-none font-mono text-[#0a84ff]" placeholder="0">
                     </div>
                     <div id="field-count" class="relative flex-1 px-3 h-12 flex items-center transition-all overflow-hidden" onclick="setActiveField('count')">
-                        <span id="label-count" class="text-[13px] font-bold uppercase transition-colors text-[#30d158] shrink-0 whitespace-nowrap mr-1">数量(N)</span>
+                        <span id="label-count" class="text-[13px] font-bold uppercase text-[#30d158] shrink-0 whitespace-nowrap mr-1">数量(N)</span>
                         <input type="text" id="count" inputmode="none" class="flex-1 w-full h-full bg-transparent text-center text-[20px] font-bold outline-none font-mono text-[#30d158]" placeholder="0">
                     </div>
                 </div>
@@ -198,7 +193,7 @@
                     </button>
                 </div>
 
-                <!-- 区切り線 (入力欄とテンキーの間) -->
+                <!-- 区切り線 -->
                 <div class="h-[2px] bg-[#545458] shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)]"></div>
 
                 <!-- テンキーエリア -->
@@ -228,7 +223,9 @@
             <div id="results" class="space-y-3">
                 <div id="card-pitch" class="bg-[#1c1c1e] p-3 rounded-2xl border-2 border-[#545458] flex flex-col items-start shadow-lg transition-all opacity-60 grayscale">
                     <div class="flex items-center justify-between w-full mb-1">
-                        <span class="text-[14px] font-bold text-gray-300 uppercase">働き基準 結果</span>
+                        <span class="text-[14px] font-bold text-gray-300 uppercase flex items-center">
+                            働き基準 結果 <span id="star-pitch" class="ml-1 text-orange-500 hidden">★</span>
+                        </span>
                         <span id="remark-total-pitch" class="text-[18px] text-white font-bold"></span>
                     </div>
                     <div class="grid grid-cols-2 w-full gap-4 pt-1 border-t border-[#545458]">
@@ -251,7 +248,9 @@
 
                 <div id="card-count" class="bg-[#1c1c1e] p-3 rounded-2xl border-2 border-[#545458] flex flex-col items-start shadow-lg transition-all opacity-60 grayscale">
                     <div class="flex items-center justify-between w-full mb-1">
-                        <span class="text-[14px] font-bold text-gray-300 uppercase">数量基準 結果</span>
+                        <span class="text-[14px] font-bold text-gray-300 uppercase flex items-center">
+                            数量基準 結果 <span id="star-count" class="ml-1 text-orange-500 hidden">★</span>
+                        </span>
                         <span id="remark-total-count" class="text-[18px] text-white font-bold"></span>
                     </div>
                     <div class="grid grid-cols-2 w-full gap-4 pt-1 border-t border-[#545458]">
@@ -355,6 +354,8 @@
         const unitWidthRem = document.getElementById('unitWidthRem');
         const cardPitch = document.getElementById('card-pitch');
         const cardCount = document.getElementById('card-count');
+        const starPitch = document.getElementById('star-pitch');
+        const starCount = document.getElementById('star-count');
         const labelPitch = document.getElementById('label-pitch');
         const labelCount = document.getElementById('label-count');
         const keypadSave = document.getElementById('keypad-save');
@@ -395,8 +396,8 @@
             let pSum = 0, cSum = 0;
             historyData.forEach(item => {
                 if((item.no || "").trim() === currentRem) {
-                    if(item.source === 'pitch') pSum += (item.resQtyNum || 0);
-                    if(item.source === 'count') cSum += (item.countNum || 0);
+                    pSum += (item.resQtyNum || 0);
+                    cSum += (item.countNum || 0);
                 }
             });
             remarkTotalPitch.innerHTML = pSum > 0 ? `<span style="font-size: 18px;">合計${pSum}枚</span>` : "";
@@ -416,20 +417,25 @@
 
         function calculate() {
             const L = parseValue(totalLengthInput.value), W = parseValue(pitchInput.value), N = parseValue(countInput.value);
+            
             resQuantity.innerText = "-"; resQtyRemainder.innerText = "-";
             resWidth.innerText = "-"; resWidthRemainder.innerText = "-";
             [unitQuantity, unitQtyRem, unitWidth, unitWidthRem].forEach(u => u.classList.add('hidden'));
-            [pitchInput, countInput, labelPitch, labelCount].forEach(el => el.classList.remove('text-[#0a84ff]', 'text-[#30d158]'));
+            
             cardPitch.className = cardCount.className = "bg-[#1c1c1e] p-3 rounded-2xl border-2 border-[#545458] flex flex-col items-start shadow-lg transition-all opacity-60 grayscale";
+            starPitch.classList.add('hidden');
+            starCount.classList.add('hidden');
+
             let effectiveSource = inputSource;
             if (!effectiveSource) {
                 if (!isNaN(W) && W > 0) effectiveSource = 'pitch';
                 else if (!isNaN(N) && N > 0) effectiveSource = 'count';
             }
+
             if (isNaN(L) || (isNaN(W) && isNaN(N)) || !effectiveSource) return;
+
             if (effectiveSource === 'pitch') {
-                pitchInput.classList.add('text-[#0a84ff]'); labelPitch.classList.add('text-[#0a84ff]');
-                countInput.classList.add('text-[#0a84ff]'); labelCount.classList.add('text-[#0a84ff]');
+                starPitch.classList.remove('hidden');
                 if (W > 0) {
                     const qty = Math.ceil(L / W), remP = (qty * W) - L;
                     resQuantity.innerText = formatNumber(qty); resQtyRemainder.innerText = formatNumber(remP);
@@ -441,8 +447,7 @@
                     cardCount.className = "bg-[#1c1c1e] p-3 rounded-2xl border-2 border-[#30d158] flex flex-col items-start shadow-lg transition-all";
                 }
             } else if (effectiveSource === 'count') {
-                pitchInput.classList.add('text-[#30d158]'); labelPitch.classList.add('text-[#30d158]');
-                countInput.classList.add('text-[#30d158]'); labelCount.classList.add('text-[#30d158]');
+                starCount.classList.remove('hidden');
                 if (N > 0) {
                     const width = Math.ceil(L / N), remN = (width * N) - L;
                     resWidth.innerText = formatNumber(width); resWidthRemainder.innerText = formatNumber(remN);
@@ -459,30 +464,38 @@
         function updateHistoryTable(shouldSave = true) {
             historyTableBody.innerHTML = ''; memoSummaryList.innerHTML = '';
             let sumQ = 0, sumN = 0; const summaryByMemo = {}, memoOrder = [];
+            
             historyData.forEach((item, idx) => {
                 const tr = document.createElement('tr'); tr.className = `border-t border-[#545458]`;
                 const memoKey = item.no || "（備考なし）";
                 if (!summaryByMemo[memoKey]) { summaryByMemo[memoKey] = { pitchTotal: 0, countTotal: 0 }; memoOrder.push(memoKey); }
+                
                 const noH = item.no ? `<div class="mb-1 text-[13px] font-bold bg-[#48484a] px-2 rounded-full inline-block text-white">${item.no}</div>` : '';
                 const dimP = item.memoDim ? `<span class="text-[13px] text-[#ff9f0a] font-medium mr-1.5">L:${item.memoDim}</span>` : '';
                 const wL = `<div class="text-[13px] text-[#c0c0c0] font-bold mt-0.5">W:${item.totalLength}</div>`;
+                
+                // 働き基準セル
                 const td1 = document.createElement('td'); td1.className = `py-1.5 px-1 border-r border-[#545458] cursor-pointer active:bg-gray-800`;
                 td1.onclick = () => loadHistoryToInput(item, 'pitch');
-                if (item.source === 'pitch') {
-                    td1.innerHTML = `<div class="flex flex-col items-center leading-tight">${noH}<div class="flex items-baseline justify-center">${dimP}<span class="text-[16px] font-bold text-[#0a84ff]">${item.resQty}枚</span></div>${wL}<div class="text-[12px] text-gray-400 mt-0.5">@${item.pitch} 残:${item.resQtyRem}</div></div>`;
-                    sumQ += (item.resQtyNum || 0); summaryByMemo[memoKey].pitchTotal += (item.resQtyNum || 0);
-                } else td1.innerHTML = `<div class="text-gray-600 text-[14px]">-</div>`;
+                const starP = item.source === 'pitch' ? '<span class="ml-0.5 text-orange-500 text-[12px]">★</span>' : '';
+                td1.innerHTML = `<div class="flex flex-col items-center leading-tight">${noH}<div class="flex items-baseline justify-center">${dimP}<span class="text-[16px] font-bold text-[#0a84ff]">${item.resQty}枚${starP}</span></div>${wL}<div class="text-[12px] text-gray-400 mt-0.5">@${item.pitch} 残:${item.resQtyRem}</div></div>`;
+                sumQ += (item.resQtyNum || 0); summaryByMemo[memoKey].pitchTotal += (item.resQtyNum || 0);
+
+                // 数量基準セル (表示位置を入れ替え)
                 const td2 = document.createElement('td'); td2.className = `py-1.5 px-1 border-r border-[#545458] cursor-pointer active:bg-gray-800`;
                 td2.onclick = () => loadHistoryToInput(item, 'count');
-                if (item.source === 'count') {
-                    td2.innerHTML = `<div class="flex flex-col items-center leading-tight">${noH}<div class="flex items-baseline justify-center">${dimP}<span class="text-[16px] font-bold text-[#30d158]">${item.count}枚</span></div>${wL}<div class="text-[12px] text-gray-400 mt-0.5">@${item.resWidth}㎜ 残:${item.resWidthRem}</div></div>`;
-                    sumN += (item.countNum || 0); summaryByMemo[memoKey].countTotal += (item.countNum || 0);
-                } else td2.innerHTML = `<div class="text-gray-600 text-[14px]">-</div>`;
+                const starC = item.source === 'count' ? '<span class="ml-0.5 text-orange-500 text-[12px]">★</span>' : '';
+                td2.innerHTML = `<div class="flex flex-col items-center leading-tight">${noH}<div class="flex items-baseline justify-center">${dimP}<span class="text-[16px] font-bold text-[#30d158]">${item.resWidth}㎜${starC}</span></div>${wL}<div class="text-[12px] text-gray-400 mt-0.5">@${item.count}枚 残:${item.resWidthRem}</div></div>`;
+                sumN += (item.countNum || 0); summaryByMemo[memoKey].countTotal += (item.countNum || 0);
+
                 const td3 = document.createElement('td'); td3.className = "py-0";
                 td3.innerHTML = `<button onclick="deleteHistoryRow(${idx})" class="p-1 text-red-500 active:text-red-600 w-full flex justify-center items-center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>`;
+                
                 tr.append(td1, td2, td3); historyTableBody.appendChild(tr);
             });
+
             totalQtySum.innerText = sumQ > 0 ? formatNumber(sumQ) + "枚" : "-"; totalCountSum.innerText = sumN > 0 ? formatNumber(sumN) + "枚" : "-";
+            
             if (memoOrder.length > 0) {
                 memoSummaryBox.classList.remove('hidden');
                 memoOrder.forEach(key => {
@@ -538,14 +551,30 @@
                     else if (N > 0) saveSource = 'count';
                 }
                 if (isNaN(L) || !saveSource) return;
-                let entry = { id: Date.now().toString(), source: saveSource, totalLength: formatNumber(L), no: inputNo.value, memoDim: memoDimInput.value };
-                if (saveSource === 'pitch' && W > 0) {
-                    const qty = Math.ceil(L / W), rem = (qty * W) - L;
-                    entry.pitch = formatNumber(W); entry.resQty = formatNumber(qty); entry.resQtyNum = qty; entry.resQtyRem = formatNumber(rem);
-                } else if (saveSource === 'count' && N > 0) {
-                    const width = Math.ceil(L / N), rem = (width * N) - L;
-                    entry.count = formatNumber(N); entry.countNum = N; entry.resWidth = formatNumber(width); entry.resWidthRem = formatNumber(rem);
-                } else return;
+
+                // 働き基準の結果
+                const qty = Math.ceil(L / W), remP = (qty * W) - L;
+                // 数量基準の結果
+                const width = Math.ceil(L / N), remN = (width * N) - L;
+
+                let entry = { 
+                    id: Date.now().toString(), 
+                    source: saveSource, 
+                    totalLength: formatNumber(L), 
+                    no: inputNo.value, 
+                    memoDim: memoDimInput.value,
+                    // 働き基準用データ
+                    pitch: formatNumber(W),
+                    resQtyNum: qty,
+                    resQty: formatNumber(qty),
+                    resQtyRem: formatNumber(remP),
+                    // 数量基準用データ
+                    count: formatNumber(N),
+                    countNum: N,
+                    resWidth: formatNumber(width),
+                    resWidthRem: formatNumber(remN)
+                };
+
                 historyData.unshift(entry); updateHistoryTable(); updateRemarkTotals();
                 saveToast.classList.add('show'); setTimeout(() => saveToast.classList.remove('show'), 1200); return;
             }
@@ -599,8 +628,9 @@
 
         function loadHistoryToInput(item, source) {
             totalLengthInput.value = item.totalLength; memoDimInput.value = item.memoDim || ""; inputNo.value = item.no || "";
-            if (source === 'pitch') { pitchInput.value = item.pitch ? item.pitch.replace(/,/g, '') : ""; inputSource = 'pitch'; }
-            else { countInput.value = item.count ? item.count.replace(/,/g, '') : ""; inputSource = 'count'; }
+            pitchInput.value = item.pitch ? item.pitch.replace(/,/g, '') : ""; 
+            countInput.value = item.count ? item.count.replace(/,/g, '') : "";
+            inputSource = item.source; // 保存時の基準を復元
             [totalLengthInput, memoDimInput, pitchInput, countInput, inputNo].forEach(formatInputDisplay);
             calculate(); switchTab('calc'); updateRemarkTotals();
         }
